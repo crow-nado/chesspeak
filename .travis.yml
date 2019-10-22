@@ -2,8 +2,8 @@ language: ruby
 rvm:
   - 2.5.3
 before_script:
-  - bundle exec rake db:create --all
-  - bundle exec rake db:migrate
+  - bundle update --system
+  - gem install bundler
 script:
   - bundle exec rake ci:tests
 services:
