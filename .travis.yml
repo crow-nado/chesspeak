@@ -1,0 +1,14 @@
+language: ruby
+dist: trusty
+rvm:
+  - 2.5.3
+before_script:
+  - gem update --system
+  - bundle exec rake db:create --all
+  - bundle exec rake db:migrate
+script:
+  # - bundle exec rake ci:tests
+services:
+  - postgresql
+notifications:
+  email: false
