@@ -93,4 +93,7 @@ RSpec.configure do |config|
   # as the one that triggered the failure.
   Kernel.srand config.seed
 =end
+
+  #Brings in Capybara for testing in RSpec
+  require 'capybara/rspec'
 end
