@@ -45,6 +45,8 @@ group :development, :test do
   # Adds support for Capybara system testing and selenium driver
   gem 'capybara'
   gem 'selenium-webdriver'
+  # Adds FactoryBot for test factory creation
+  gem 'factory_bot_rails'
 end
 
 group :development do
