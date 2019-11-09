@@ -5,14 +5,14 @@
 
 // If you'd like to include motion-ui the foundation-rails gem comes prepackaged with it, uncomment the 3 @imports, if you are not using the gem you need to install the motion-ui sass package.
 //
-// @import 'motion-ui/motion-ui';
+@import 'motion-ui/motion-ui';
 
 // We include everything by default.  To slim your CSS, remove components you don't use.
 
 @include foundation-global-styles;
 @include foundation-xy-grid-classes;
-//@include foundation-grid;
-//@include foundation-flex-grid;
+// @include foundation-grid;
+@include foundation-flex-grid;
 @include foundation-flex-classes;
 @include foundation-typography;
 @include foundation-forms;
@@ -52,5 +52,5 @@
 
 // If you'd like to include motion-ui the foundation-rails gem comes prepackaged with it, uncomment the 3 @imports, if you are not using the gem you need to install the motion-ui sass package.
 //
-// @include motion-ui-transitions;
-// @include motion-ui-animations;
+@include motion-ui-transitions;
+@include motion-ui-animations;
