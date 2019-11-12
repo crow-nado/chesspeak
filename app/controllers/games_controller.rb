@@ -6,7 +6,12 @@ class GamesController < ApplicationController
   end
 
   def create
-    game = Game.create(name: "Test Game!", white_player_id: current_user.id)
+    if current_user
+      game = Game.create(name: "Test Game!", white_player_id: current_user.id)
+    else
+      #Only for testing purposes - update when validation is implemented
+      game = Game.create(name: "Test Game!")
+    end
     redirect_to game_path(game)
   end
 
