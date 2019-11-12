@@ -8,4 +8,12 @@ RSpec.describe Game, type: :model do
       expect(game.pieces.count).to eq 32
     end
   end
+
+  describe "#populate_white_pawns" do
+    it "places the white pawns in the Game" do
+      game = Game.create()
+      game.populate_white_pawns
+      expect(game.pawns.find_by(y_position: 2)).to be_instance_of(Pawn)
+    end
+  end
 end
