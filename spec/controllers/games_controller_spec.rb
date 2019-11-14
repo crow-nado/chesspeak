@@ -17,5 +17,18 @@ RSpec.describe GamesController, type: :controller do
       expect(game.white_player_id).to eq(user.id)
       expect(game.name).to eq("Test Game!")
     end
+    it "populates all the game pieces" do
+      user = FactoryBot.create(:user)
+      sign_in user
+
+      post :create, params: { 
+        game: { 
+          name: "Test Game!" 
+        }
+      }
+
+      game = Game.last
+      expect(game.pieces.count).to eq 32
+    end
   end
 end

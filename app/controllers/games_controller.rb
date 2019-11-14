@@ -12,6 +12,7 @@ class GamesController < ApplicationController
       #Only for testing purposes - update when validation is implemented
       game = Game.create(name: "Test Game!")
     end
+    game.populate!
     redirect_to game_path(game)
   end
 
@@ -20,6 +21,7 @@ class GamesController < ApplicationController
   end
 
 private
+  #Review whether name will be automated or entered by user - consider user stories for how game name is used
   def game_params
     params.require(:game).permit(:name, :white_player_id)
   end

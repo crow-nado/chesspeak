@@ -13,6 +13,22 @@ describe "initial page load", type: :feature do
   end
 end
 
+#Draft test for Capybara creating a new game
+# describe "game setup", type: :feature do
+#   it "creates a new game" do
+#     user = FactoryBot.create(:user)
+#     visit '/'
+
+#     find("#submit").click
+
+#     game = Game.last
+#     expect(game.pawns.find_by(y_position: 2)).to be_instance_of(Pawn)
+#     expect(game.pieces.count).to eq 32
+# #   end
+
+# end
+
+
 #Initial tests to confirm FactoryBot successfully installed
 
 # These fail with Foundation (Pop ups do not appear. User is either shown the page again or successfully redirected)
