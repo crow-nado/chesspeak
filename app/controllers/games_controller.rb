@@ -20,6 +20,11 @@ class GamesController < ApplicationController
     @game = Game.find(params[:id])
   end
 
+  def update
+    @game = Game.find(params[:id])
+    render json: @game.pieces
+  end
+
 private
   #Review whether name will be automated or entered by user - consider user stories for how game name is used
   def game_params
