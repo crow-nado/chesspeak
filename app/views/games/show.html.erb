@@ -2,10 +2,17 @@
 $(function() {
   $.ajax({
     type: "PUT",
-    url: "/games/21",
+    url: "<%= game_path(@game) %>",
     dataType: "json",
     success: function(data){
-      alert(data[0].image);
+      let ranks = ["A", "B", "C", "D", "E", "F", "G", "H"];
+      let files = ["1", "2", "3", "4", "5", "6", "7", "8"];
+      data.forEach( piece => {
+        let pieceRank = ranks[piece.x_position-1];
+        let pieceFile = files[piece.y_position-1];
+        let piecePosition = pieceRank.concat(pieceFile);
+        $(`.${piecePosition}`).html(piece.image);
+      });
     }
   })
 })
@@ -46,14 +53,14 @@ $(function() {
       <div class="G8 box">&#9822</div>
       <div class="H8 box">&#9820</div>
 
-      <div class="A7 box">&#9823</div>
-      <div class="B7 box">&#9823</div>
-      <div class="C7 box">&#9823</div>
-      <div class="D7 box">&#9823</div>
-      <div class="E7 box">&#9823</div>
-      <div class="F7 box">&#9823</div>
-      <div class="G7 box">&#9823</div>
-      <div class="H7 box">&#9823</div>
+      <div class="A7 box"></div>
+      <div class="B7 box"></div>
+      <div class="C7 box"></div>
+      <div class="D7 box"></div>
+      <div class="E7 box"></div>
+      <div class="F7 box"></div>
+      <div class="G7 box"></div>
+      <div class="H7 box"></div>
 
       <div class="A6 box"></div>
       <div class="B6 box"></div>
@@ -91,14 +98,14 @@ $(function() {
       <div class="G3 box"></div>
       <div class="H3 box"></div>
 
-      <div class="A2 box">&#9817</div>
-      <div class="B2 box">&#9817</div>
-      <div class="C2 box">&#9817</div>
-      <div class="D2 box">&#9817</div>
-      <div class="E2 box">&#9817</div>
-      <div class="F2 box">&#9817</div>
-      <div class="G2 box">&#9817</div>
-      <div class="H2 box">&#9817</div>
+      <div class="A2 box"></div>
+      <div class="B2 box"></div>
+      <div class="C2 box"></div>
+      <div class="D2 box"></div>
+      <div class="E2 box"></div>
+      <div class="F2 box"></div>
+      <div class="G2 box"></div>
+      <div class="H2 box"></div>
 
       <div class="A1 box">&#9814</div>
       <div class="B1 box">&#9816</div>
