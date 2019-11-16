@@ -9,6 +9,8 @@ class Pawn < Piece
 
   def as_json(options={})
     super(only: [:x_position, :y_position, :player_id, :type, :image],
-          methods: [:image])
+         methods: [:image])
   end
+
+
 end

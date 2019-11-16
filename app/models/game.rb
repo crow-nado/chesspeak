@@ -58,25 +58,25 @@ class Game < ApplicationRecord
 
   def populate_white_knights
     [2,7].each do |column|
-      self.rooks.create(x_position: column, y_position: 1)
+      self.knights.create(x_position: column, y_position: 1)
     end
   end
 
   def populate_black_knights
     [2,7].each do |column|
-      self.rooks.create(x_position: column, y_position: 8)
+      self.knights.create(x_position: column, y_position: 8)
     end
   end
 
   def populate_white_bishops
     [3,6].each do |column|
-      self.rooks.create(x_position: column, y_position: 1)
+      self.bishops.create(x_position: column, y_position: 1)
     end
   end
 
   def populate_black_bishops
     [3,6].each do |column|
-      self.rooks.create(x_position: column, y_position: 8)
+      self.bishops.create(x_position: column, y_position: 8)
     end
   end
 
