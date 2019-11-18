@@ -1,8 +1,16 @@
 <br />
 <div class="row align-center">
   <div class="head small-3 small-centered columns">
-    <form id="newGame" method="POST" action="/games"></form>
-    <a onclick="document.getElementById('newGame').submit();" class="button large">PLAY!</a>
+    <% if user_signed_in? %>
+      <form id="newGame" method="POST" action="/games"></form>
+      <a id="newGameButton" onclick="document.getElementById('newGame').submit();" class="button large">PLAY!</a>
+      <h4 style="text-align:center;">OR</h4>
+      <a href="<%= destroy_user_session_path %>" class="button large">LOG OUT</a>
+    <% else %>
+      <a href="<%= new_user_registration_path %>" class="button large">SIGN UP</a>
+      <h4 style="text-align:center;">OR</h4>
+      <a href="<%= new_user_session_path %>" class="button large">SIGN IN</a>
+    <% end %>
   </div>
 </div>
 <br />
