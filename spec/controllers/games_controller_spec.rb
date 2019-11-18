@@ -11,11 +11,14 @@ RSpec.describe GamesController, type: :controller do
           name: "Test Game!" 
         }
       }
-
+      #Test game created
       game = Game.last
-      expect(response).to redirect_to game_path(game.id)
-      expect(game.white_player_id).to eq(user.id)
       expect(game.name).to eq("Test Game!")
+      expect(response).to redirect_to game_path(game.id)
+      #Test player connection
+      player1 = User.find_by(id: game.white_player_id).email
+      expect(game.white_player_id).to eq(user.id)
+      expect(player1).to eq(user.email)
     end
     it "populates all the game pieces" do
       user = FactoryBot.create(:user)

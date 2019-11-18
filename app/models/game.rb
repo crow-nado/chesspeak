@@ -5,7 +5,7 @@ class Game < ApplicationRecord
   has_many :bishops
   has_many :kings
   has_many :queens
-  has_many :pieces 
+  has_many :pieces
 
   def populate!
     populate_white_side
