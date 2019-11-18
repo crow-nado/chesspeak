@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe GamesController, type: :controller do
-  describe "GET #index" do   
-  end
 
   describe "POST #create" do
     it "creates a new game with the user as Player 1" do
