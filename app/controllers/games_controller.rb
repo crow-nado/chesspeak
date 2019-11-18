@@ -3,6 +3,7 @@ class GamesController < ApplicationController
   skip_before_action :verify_authenticity_token
 
   def index
+    # Show public/available games?
   end
 
   def create
@@ -18,6 +19,10 @@ class GamesController < ApplicationController
 
   def show
     @game = Game.find(params[:id])
+  end
+
+  def update
+    # Add second player?
   end
 
 private
