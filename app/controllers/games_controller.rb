@@ -3,7 +3,7 @@ class GamesController < ApplicationController
   before_action :authenticate_user!
 
   def index
-    # Show public/available games?
+    @games = Game.available.all
   end
 
   def create

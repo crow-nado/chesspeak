@@ -6,6 +6,7 @@ class Game < ApplicationRecord
   has_many :kings
   has_many :queens
   has_many :pieces
+  scope :available, -> { where(black_player_id: nil) }
 
   def populate!
     populate_white_side
