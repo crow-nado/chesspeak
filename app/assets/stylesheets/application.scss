@@ -1,2 +1,34 @@
  @import 'foundation_and_overrides';
- @import './static_pages/*';
+ @import 'static_pages';
+ @import 'games';
+
+body {
+  background-color: rgb(224, 224, 224);
+}
+
+.wrapper {
+  border: 50px solid #462921;
+  background-color: #7d694c;
+  display: grid;
+  grid-gap: 0;
+  grid-template-columns: 40px repeat(8, 80px) 40px;
+  grid-template-rows: 40px repeat(8, 80px) 40px;
+  grid-auto-flow: row;
+}
+
+.box {
+  padding: 20px;
+  font-size: 150%;
+  background-color: #b5915f;
+  text-align: center;
+}
+
+.box-inner{
+  text-align: center;
+  align-self: center;
+  align-items: stretch;
+}
+
+.white {
+  background-color: #FFF;
+}

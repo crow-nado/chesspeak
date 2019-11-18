@@ -7,4 +7,7 @@ FactoryBot.define do
     password { "secretPassword" }
     password_confirmation { "secretPassword" }
   end
+  factory :game do
+    name { "Test Name" }
+  end
 end
