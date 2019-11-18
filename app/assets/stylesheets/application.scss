@@ -29,38 +29,6 @@ body {
   align-items: stretch;
 }
 
-.box:nth-of-type(2n) {
+.white {
   background-color: #FFF;
 }
-
-/*
-.top,
-.bottom{
-  display: grid;
-  align-items: stretch;
-  background-color: #7d694c;
-}
-.top {
-  grid-column-start: 1;
-  grid-column-end: 9;
-  grid-row-start: 1;
-  grid-row-end: 1;
-}
-.bottom {
-  grid-column-start: 1;
-  grid-column-end: 9;
-  grid-row-start: 10;
-  grid-row-end: 10;
-}
-
-.box:nth-child(-2n+9), 
-.box:nth-child(9) ~ div:nth-child(-2n+16), 
-.box:nth-child(17) ~ div:nth-child(-2n+25), 
-.box:nth-child(25) ~ div:nth-child(-2n+32), 
-.box:nth-child(33) ~ div:nth-child(-2n+41), 
-.box:nth-child(41) ~ div:nth-child(-2n+48), 
-.box:nth-child(49) ~ div:nth-child(-2n+57), 
-.box:nth-child(57) ~ div:nth-child(-2n+64){
-  background-color: #FFF;
-}
-*/
