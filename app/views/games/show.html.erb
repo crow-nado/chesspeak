@@ -148,9 +148,11 @@ $(function() {
   </div>
 
   <div class="cell large-3 text-center" id="player2">
-    <h3>Player 2 Ready!</h3>
     <% if @player_black %>
+        <h3>Player 2 Ready!</h3>
         <h4><%= @player_black.username %></h4>
+    <% else %>
+        <h3> Searching for Opponant...</h3>
     <% end %>
   </div>
 

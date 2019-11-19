@@ -2,7 +2,9 @@
 <div class="row align-center">
   <div class="head small-3 small-centered columns">
     <% if user_signed_in? %>
-      <%= link_to "PLAY!", games_path, method: :post, class: "button large", id: "newGameButton" %>
+      <%= link_to "CREATE NEW GAME!", games_path, method: :post, class: "button large", id: "newGameButton" %>
+      <h4 style="text-align:center;">OR</h4>
+      <%= link_to "JOIN A GAME!", games_path, method: :get, class: "button large", id: "joinGameButton" %>
       <h4 style="text-align:center;">OR</h4>
       <%= link_to "LOG OUT", destroy_user_session_path, method: :delete, class: "button large" %>
     <% else %>
