@@ -1,15 +1,36 @@
 require 'rails_helper'
 
 #Initial tests to confirm Capybara successfully installed
-describe "initial page load", type: :feature do
-  it "loads initial page" do
+describe "landing page", type: :feature do
+  it "asks a user to sign in or sign up if they are not already signed in" do
     visit '/'
-    expect(page).to have_content('PLAY!')
+    expect(page).to have_content('SIGN IN')
   end
 
-  it "fails test initial page" do
-    visit '/'
-    expect(page).to have_no_content('Bacon')
+  it " displays the PLAY! button if a user is signed in" do
+    visit '/users/sign_up'
+
+    fill_in 'Username', with: 'test'
+    fill_in 'Email', with: 'test@test.test'
+    fill_in 'Password', with: 'testtest'
+    fill_in 'Password confirmation', with: 'testtest'
+    find('input[name="commit"]').click
+
+    expect(page).to have_content('PLAY!')
+    expect(page).to have_content('LOG OUT')
+  end
+end
+
+describe "game page", type: :feature do
+  it "displays the user's username on their side" do
+    user = FactoryBot.create(:user)
+    visit '/users/sign_in'
+    fill_in 'Email', with: user.email
+    fill_in 'Password', with: user.password
+    click_button 'Log in'
+    expect(page).to have_content('PLAY!')
+    find('a[id="newGameButton"]').click
+    expect(page).to have_content(user.username, maximum: 20)
   end
 end
 
