@@ -6,23 +6,25 @@ class GamesController < ApplicationController
     @games = Game.available.all
   end
 
+  def new
+    @game = Game.new
+  end
+
   def create
-    game = Game.create(name: "Test Game!", white_player_id: current_user.id)
-    game.populate!
-    redirect_to game_path(game)
+    @game = Game.create(game_params.merge(white_player_id: current_user.id))
+    @game.populate!
+    redirect_to game_path(@game)
   end
 
   def show
     @game = Game.find(params[:id])
     @player_white = User.find_by(id: @game.white_player_id)
     @player_black = User.find_by(id: @game.black_player_id)
-    # @white_username = player_white.username
   end
 
   def update
-    # Add second player?
     game = Game.find(params[:id])
-    game = Game.update(black_player_id: current_user.id)
+    game.update(black_player_id: current_user.id)
     redirect_to game_path(game)
   end
 

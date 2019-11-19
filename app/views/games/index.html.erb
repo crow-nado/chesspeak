@@ -10,7 +10,7 @@
       <tbody>
         <% @games.each do |game| %>
         <tr>
-          <td><%= link_to 'Join Game', game_path(game.id), method: :patch %></td>
+          <td><%= link_to 'Join Game', game_path(game), method: :patch %></td>
           <td><%= game.name %></td>
           <td><%= User.find_by(id: game.white_player_id).username %>
         </tr>
