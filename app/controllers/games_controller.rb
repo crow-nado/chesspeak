@@ -15,16 +15,20 @@ class GamesController < ApplicationController
   def show
     @game = Game.find(params[:id])
     @player_white = User.find_by(id: @game.white_player_id)
+    @player_black = User.find_by(id: @game.black_player_id)
     # @white_username = player_white.username
   end
 
   def update
     # Add second player?
+    game = Game.find(params[:id])
+    game = Game.update(black_player_id: current_user.id)
+    redirect_to game_path(game)
   end
 
 private
   #Review whether name will be automated or entered by user - consider user stories for how game name is used
   def game_params
-    params.require(:game).permit(:name, :white_player_id)
+    params.require(:game).permit(:name, :white_player_id, :black_player_id)
   end
 end

@@ -17,9 +17,9 @@ RSpec.describe GamesController, type: :controller do
       expect(game.name).to eq("Test Game!")
       expect(response).to redirect_to game_path(game.id)
       #Test player connection
-      player1 = User.find_by(id: game.white_player_id).email
+      player1 = User.find_by(id: game.white_player_id).username
       expect(game.white_player_id).to eq(user.id)
-      expect(player1).to eq(user.email)
+      expect(player1).to eq(user.username)
     end
     it "populates all the game pieces" do
       user = FactoryBot.create(:user)
@@ -34,10 +34,26 @@ RSpec.describe GamesController, type: :controller do
       game = Game.last
       expect(game.pieces.count).to eq 32
     end
+    it "doesn't let a user create a game before signing in" do
+      post :create
+      expect(response).to redirect_to(new_user_session_path)
+    end
   end
 
-  it "doesn't let a user create a game before signing in" do
-    post :create
-    expect(response).to redirect_to(new_user_session_path)
+  describe "game#update" do
+    it "update game with Player 2 as user" do
+      user = FactoryBot.create(:user)
+      game = FactoryBot.create(:game, { white_player_id: user.id})
+      user2 = FactoryBot.create(:user)
+      sign_in user2
+
+      patch :update, params: { id: game.id, game: { black_player_id: user2.id } }
+
+      game.reload
+      player2 = User.find_by(id: game.black_player_id)
+      expect(game.black_player_id).to eq(user2.id)
+      expect(player2.username).to eq(user2.username)
+    end
   end
+
 end
