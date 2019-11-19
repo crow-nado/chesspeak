@@ -35,7 +35,7 @@ RSpec.describe GamesController, type: :controller do
     end
   end
 
-  it "doesn't let a user creat a game before signing in" do
+  it "doesn't let a user create a game before signing in" do
     post :create
     expect(response).to redirect_to(new_user_session_path)
   end
