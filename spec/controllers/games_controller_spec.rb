@@ -55,5 +55,4 @@ RSpec.describe GamesController, type: :controller do
       expect(player2.username).to eq(user2.username)
     end
   end
-
 end
