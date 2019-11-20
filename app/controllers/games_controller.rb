@@ -3,28 +3,34 @@ class GamesController < ApplicationController
   before_action :authenticate_user!
 
   def index
-    # Show public/available games?
+    @games = Game.available.all
+  end
+
+  def new
+    @game = Game.new
   end
 
   def create
-    game = Game.create(name: "Test Game!", white_player_id: current_user.id)
-    game.populate!
-    redirect_to game_path(game)
+    @game = Game.create(game_params.merge(white_player_id: current_user.id))
+    @game.populate!
+    redirect_to game_path(@game)
   end
 
   def show
     @game = Game.find(params[:id])
     @player_white = User.find_by(id: @game.white_player_id)
-    # @white_username = player_white.username
+    @player_black = User.find_by(id: @game.black_player_id)
   end
 
   def update
-    # Add second player?
+    game = Game.find(params[:id])
+    game.update(black_player_id: current_user.id)
+    redirect_to game_path(game)
   end
 
 private
   #Review whether name will be automated or entered by user - consider user stories for how game name is used
   def game_params
-    params.require(:game).permit(:name, :white_player_id)
+    params.require(:game).permit(:name, :white_player_id, :black_player_id)
   end
 end

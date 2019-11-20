@@ -1,0 +1,22 @@
+<br />
+<div class="grid-x align-center">
+  <div class="cell large-6">
+    <table class="hover">
+      <thead>
+        <th width="80">Join</th>
+        <th width="400">Game</th>
+        <th width="120">Player Waiting</th>
+      </thead>
+      <tbody>
+        <% @games.each do |game| %>
+        <tr>
+          <td><%= link_to 'Join Game', game_path(game), method: :patch %></td>
+          <td><%= game.name %></td>
+          <td><%= User.find_by(id: game.white_player_id).username %>
+        </tr>
+        <% end %>
+      </tbody>
+    </table>
+
+  </div>
+</div>

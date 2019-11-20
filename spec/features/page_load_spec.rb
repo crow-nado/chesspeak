@@ -7,7 +7,7 @@ describe "landing page", type: :feature do
     expect(page).to have_content('SIGN IN')
   end
 
-  it " displays the PLAY! button if a user is signed in" do
+  it " displays the CREATE NEW GAME! button if a user is signed in" do
     visit '/users/sign_up'
 
     fill_in 'Username', with: 'test'
@@ -16,7 +16,8 @@ describe "landing page", type: :feature do
     fill_in 'Password confirmation', with: 'testtest'
     find('input[name="commit"]').click
 
-    expect(page).to have_content('PLAY!')
+    expect(page).to have_content('CREATE NEW GAME!')
+    expect(page).to have_content('JOIN A GAME!')
     expect(page).to have_content('LOG OUT')
   end
 end
@@ -28,26 +29,48 @@ describe "game page", type: :feature do
     fill_in 'Email', with: user.email
     fill_in 'Password', with: user.password
     click_button 'Log in'
-    expect(page).to have_content('PLAY!')
+    expect(page).to have_content('CREATE NEW GAME!')
     find('a[id="newGameButton"]').click
     expect(page).to have_content(user.username, maximum: 20)
   end
 end
 
-#Draft test for Capybara creating a new game
-# describe "game setup", type: :feature do
-#   it "creates a new game" do
-#     user = FactoryBot.create(:user)
-#     visit '/'
+describe "game setup", type: :feature do
+  before :each do
+    active_user = FactoryBot.create(:user)
+    visit '/users/sign_in'
+    fill_in 'Email', with: active_user.email
+    fill_in 'Password', with: active_user.password
+    click_button 'Log in'
+  end
 
-#     find("#submit").click
+  it "creates a new game" do
+    visit '/games/new'
 
-#     game = Game.last
-#     expect(game.pawns.find_by(y_position: 2)).to be_instance_of(Pawn)
-#     expect(game.pieces.count).to eq 32
-# #   end
+    fill_in 'Name', with: 'Test Game'
+    click_button 'Create Game'
 
-# end
+    game = Game.last
+    expect(page).to have_content('Test Game')
+    expect(game.pawns.find_by(y_position: 2)).to be_instance_of(Pawn)
+    expect(game.pieces.count).to eq 32
+    expect(page).to have_content("Player 1 Ready!")
+  end
+
+  it "joins an existing game" do
+    user = FactoryBot.create(:user)
+    game = FactoryBot.create(:game, { white_player_id: user.id})
+
+    visit '/games/'
+
+    click_link 'Join Game'
+
+    expect(page).to have_content("Player 1 Ready!")
+    expect(page).to have_content("Player 2 Ready!")
+    expect(page).to have_content(game.name)
+  end
+
+end
 
 
 #Initial tests to confirm FactoryBot successfully installed
