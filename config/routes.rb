@@ -4,7 +4,7 @@ Rails.application.routes.draw do
   root 'static_pages#index'
   scope shallow_path: 'games' do
     resources :games, only: [:create, :index, :show, :update, :new] do
-      resources :board_state, only: [:show, :update], shallow: true
+      resources :pieces, only: [:show, :update], shallow: true
     end
   end
 end

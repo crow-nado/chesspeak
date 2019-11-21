@@ -2,7 +2,7 @@
 $(function() {
   $.ajax({
     type: "GET",
-    url: "<%= board_state_path(@game) %>",
+    url: "<%= piece_path(@game) %>",
     dataType: "json",
     success: function(data){
       let ranks = ["A", "B", "C", "D", "E", "F", "G", "H"];

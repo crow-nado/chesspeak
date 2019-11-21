@@ -1,4 +1,4 @@
-class BoardStateController < ApplicationController
+class PiecesController < ApplicationController
   skip_before_action :verify_authenticity_token
   def show
     @game = Game.find(params[:id])
