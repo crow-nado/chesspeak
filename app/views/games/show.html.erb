@@ -7,21 +7,22 @@ $(function(){
     let ranks = ["A", "B", "C", "D", "E", "F", "G", "H"];
     let files = ["1", "2", "3", "4", "5", "6", "7", "8"];
     json.forEach( piece => {
-      let pieceRank = ranks[piece.x_position-1];
-      let pieceFile = files[piece.y_position-1];
-      let piecePosition = pieceRank.concat(pieceFile);
-      let boardSquare = $(`.${piecePosition}`);
-      boardSquare.html(piece.image);
+      let piecePosition = [piece.x_position, piece.y_position];
+      let boardSquare = $(`[x = ${piecePosition[0]}], [y = ${piecePosition[1]}]`);
+      // let pieceRank = ranks[piece.x_position];
+      // let pieceFile = files[piece.y_position];
+      // let piecePosition = pieceRank.concat(pieceFile);
+      // let boardSquare = $(`.${piecePosition}`);
+      // boardSquare.html(piece.image);
       boardSquare.on("click", function(event){
-        // console.log(event.target.attributes["data-x"].value);
-        // console.log(event.target.attributes["data-y"].value);
+        console.log(event.target.attributes["data-x"].value);
+        console.log(event.target.attributes["data-y"].value);
         event.target.classList.toggle("clicked");
       });
     })
   };
 
   fetchBoard.done(response => renderInitialBoard(response));
-
 
 });
 </script>
@@ -53,7 +54,7 @@ $(function(){
         <div class="box-inner"></div>
       
         <div class="box-inner">8</div>
-        <div class="box" data-x = "0" data-y = "7"></div>
+        <div class="box" data-x = "0" data-y = "7" data-position = "[0, 7]"></div>
         <div class="box white" data-x = "1" data-y = "7"></div>
         <div class="box" data-x = "2" data-y = "7"></div>
         <div class="box white" data-x = "3" data-y = "7"></div>
@@ -98,14 +99,14 @@ $(function(){
         <div class="box-inner">5</div>
 
         <div class="box-inner">4</div>
-        <div class="A4 box"></div>
-        <div class="B4 box white"></div>
-        <div class="C4 box"></div>
-        <div class="D4 box white"></div>
-        <div class="E4 box"></div>
-        <div class="F4 box white"></div>
-        <div class="G4 box"></div>
-        <div class="H4 box white"></div>
+        <div class="box" data-x = "0" data-y = "3"></div>
+        <div class="box white" data-x = "1" data-y = "3"></div>
+        <div class="box" data-x = "2" data-y = "5"></div>
+        <div class="box white" data-x = "3" data-y = "3"></div>
+        <div class="box" data-x = "4" data-y = "5"></div>
+        <div class="box white" data-x = "5" data-y = "3"></div>
+        <div class="box" data-x = "6" data-y = "5"></div>
+        <div class="box white" data-x = "7" data-y = "3"></div>
         <div class="box-inner">4</div>
 
         <div class="box-inner">3</div>
@@ -120,14 +121,14 @@ $(function(){
         <div class="box-inner">3</div>
 
         <div class="box-inner">2</div>
-        <div class="A2 box"></div>
-        <div class="B2 box white"></div>
-        <div class="C2 box"></div>
-        <div class="D2 box white"></div>
-        <div class="E2 box"></div>
-        <div class="F2 box white"></div>
-        <div class="G2 box"></div>
-        <div class="H2 box white"></div>
+        <div class="box" data-x = "0" data-y = "1"></div>
+        <div class="box white" data-x = "1" data-y = "1"></div>
+        <div class="box" data-x = "2" data-y = "5"></div>
+        <div class="box white" data-x = "3" data-y = "1"></div>
+        <div class="box" data-x = "4" data-y = "5"></div>
+        <div class="box white" data-x = "5" data-y = "1"></div>
+        <div class="box" data-x = "6" data-y = "5"></div>
+        <div class="box white" data-x = "7" data-y = "1"></div>
         <div class="box-inner">2</div>
 
         <div class="box-inner">1</div>
