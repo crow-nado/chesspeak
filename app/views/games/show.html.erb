@@ -12,10 +12,17 @@ $(function(){
       let piecePosition = pieceRank.concat(pieceFile);
       let boardSquare = $(`.${piecePosition}`);
       boardSquare.html(piece.image);
+      boardSquare.on("click", function(event){
+        // console.log(event.target.attributes["data-x"].value);
+        // console.log(event.target.attributes["data-y"].value);
+        event.target.classList.toggle("clicked");
+      });
     })
   };
 
   fetchBoard.done(response => renderInitialBoard(response));
+
+
 });
 </script>
 <br />
@@ -46,14 +53,14 @@ $(function(){
         <div class="box-inner"></div>
       
         <div class="box-inner">8</div>
-        <div class="A8 box" data-x = "0" data-y = "7"></div>
-        <div class="B8 box white"></div>
-        <div class="C8 box"></div>
-        <div class="D8 box white"></div>
-        <div class="E8 box"></div>
-        <div class="F8 box white"></div>
-        <div class="G8 box"></div>
-        <div class="H8 box white"></div>
+        <div class="box" data-x = "0" data-y = "7"></div>
+        <div class="box white" data-x = "1" data-y = "7"></div>
+        <div class="box" data-x = "2" data-y = "7"></div>
+        <div class="box white" data-x = "3" data-y = "7"></div>
+        <div class="box" data-x = "4" data-y = "7"></div>
+        <div class="box white" data-x = "5" data-y = "7"></div>
+        <div class="box" data-x = "6" data-y = "7"></div>
+        <div class="box white" data-x = "7" data-y = "7"></div>
         <div class="box-inner">8</div>
 
 
@@ -69,14 +76,14 @@ $(function(){
         <div class="box-inner">7</div>
 
         <div class="box-inner">6</div>
-        <div class="A6 box"></div>
-        <div class="B6 box white"></div>
-        <div class="C6 box"></div>
-        <div class="D6 box white"></div>
-        <div class="E6 box"></div>
-        <div class="F6 box white"></div>
-        <div class="G6 box"></div>
-        <div class="H6 box white"></div>
+        <div class="box" data-x = "0" data-y = "5"></div>
+        <div class="box white" data-x = "1" data-y = "5"></div>
+        <div class="box" data-x = "2" data-y = "5"></div>
+        <div class="box white" data-x = "3" data-y = "5"></div>
+        <div class="box" data-x = "4" data-y = "5"></div>
+        <div class="box white" data-x = "5" data-y = "5"></div>
+        <div class="box" data-x = "6" data-y = "5"></div>
+        <div class="box white" data-x = "7" data-y = "5"></div>
         <div class="box-inner">6</div>
 
         <div class="box-inner">5</div>
