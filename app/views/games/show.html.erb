@@ -1,21 +1,22 @@
 <script>
-$(function() {
-  $.ajax({
-    type: "GET",
-    url: "<%= game_pieces_path(@game) %>",
-    dataType: "json",
-    success: function(data){
-      let ranks = ["A", "B", "C", "D", "E", "F", "G", "H"];
-      let files = ["1", "2", "3", "4", "5", "6", "7", "8"];
-      data.forEach( piece => {
-        let pieceRank = ranks[piece.x_position-1];
-        let pieceFile = files[piece.y_position-1];
-        let piecePosition = pieceRank.concat(pieceFile);
-        $(`.${piecePosition}`).html(piece.image);
-      });
-    }
-  })
-})
+$(function(){
+  //Setup Promise to Grab board
+  let fetchBoard = $.getJSON("<%= game_pieces_path(@game) %>");
+  //Function to populate initial board
+  function renderInitialBoard (json) {
+    let ranks = ["A", "B", "C", "D", "E", "F", "G", "H"];
+    let files = ["1", "2", "3", "4", "5", "6", "7", "8"];
+    json.forEach( piece => {
+      let pieceRank = ranks[piece.x_position-1];
+      let pieceFile = files[piece.y_position-1];
+      let piecePosition = pieceRank.concat(pieceFile);
+      let boardSquare = $(`.${piecePosition}`);
+      boardSquare.html(piece.image);
+    })
+  };
+
+  fetchBoard.done(response => renderInitialBoard(response));
+});
 </script>
 <br />
 
@@ -45,7 +46,7 @@ $(function() {
         <div class="box-inner"></div>
       
         <div class="box-inner">8</div>
-        <div class="A8 box"></div>
+        <div class="A8 box" data-x = "0" data-y = "7"></div>
         <div class="B8 box white"></div>
         <div class="C8 box"></div>
         <div class="D8 box white"></div>
