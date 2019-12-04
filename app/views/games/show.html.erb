@@ -17,14 +17,26 @@ document.addEventListener("DOMContentLoaded", function(){
     });
   };
 
+  //Limit "clicked" to one active piece
   function checkActivePiece() {
     let currentSelection = document.querySelector(".clicked");
     if (currentSelection) { currentSelection.classList.remove("clicked") }
   }
 
+  //Add clicked to latest selection
   function updateActivePiece() {
     activePiece = event.target;
     activePiece.classList.add("clicked");
+    console.log(activePiece);
+  }
+
+  //Create payload to send to server
+  function updatePieceLocation(pieceID, data) {
+    let gameID = "<%= @game.id %>";
+    fetch("/games/" + gameID + "/pieces/" + pieceID, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }).then(console.log("Yay!" + JSON.stringify(data)));
   }
   
   fetchBoard
@@ -39,12 +51,18 @@ document.addEventListener("DOMContentLoaded", function(){
       if (activePiece) {
         let initialSquare = activePiece;
         let destinationSquare = event.target;
-        let [initialX, initialY] = [initialSquare.dataset.x, initialSquare.dataset.y]
+        // let [initialX, initialY] = [initialSquare.dataset.x, initialSquare.dataset.y]
         let [newX, newY] = [destinationSquare.dataset.x, destinationSquare.dataset.y]
+        let piecePayload = { piece: {
+          x_position: newX,
+          y_position: newY,
+        }};
 
         if (!destinationSquare.innerHTML) {
           destinationSquare.innerHTML = initialSquare.innerHTML
         } else { return; }
+
+        console.log(initialSquare);
 
         initialSquare.innerHTML = "";
         initialSquare.classList.remove("clicked");        
@@ -52,7 +70,11 @@ document.addEventListener("DOMContentLoaded", function(){
         destinationSquare.addEventListener("click", updateActivePiece);
         initialSquare.removeEventListener("click", checkActivePiece);
         initialSquare.removeEventListener("click", updateActivePiece);
-        activePiece = null; 
+        activePiece = null;
+
+        updatePieceLocation(initialSquare.id, piecePayload);
+
+        console.log(destinationSquare);
       }
     });
   });

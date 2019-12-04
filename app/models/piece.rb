@@ -8,4 +8,9 @@ class Piece < ApplicationRecord
     super(only: [:x_position, :y_position, :player_id, :piece_type, :image],
           methods: [:image])
   end
+
+  def valid_move?
+    return true
+    #Piece specific - effectively calling that piece model
+  end
 end
