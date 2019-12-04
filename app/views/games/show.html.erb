@@ -12,6 +12,7 @@ document.addEventListener("DOMContentLoaded", function(){
       let [x, y] = [piece.x_position, piece.y_position];
       let boardSquare = document.querySelector(`[data-x='${x}'][data-y='${y}']`);
       boardSquare.innerHTML = piece.image;
+      boardSquare.setAttribute('data-piece-id', piece.id);
       boardSquare.addEventListener("click", checkActivePiece);
       boardSquare.addEventListener("click", updateActivePiece);
     });
@@ -34,7 +35,10 @@ document.addEventListener("DOMContentLoaded", function(){
   function updatePieceLocation(pieceID, data) {
     let gameID = "<%= @game.id %>";
     fetch("/games/" + gameID + "/pieces/" + pieceID, {
-      method: 'POST',
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json'
+      },
       body: JSON.stringify(data),
     }).then(console.log("Yay!" + JSON.stringify(data)));
   }
@@ -53,7 +57,7 @@ document.addEventListener("DOMContentLoaded", function(){
         let destinationSquare = event.target;
         // let [initialX, initialY] = [initialSquare.dataset.x, initialSquare.dataset.y]
         let [newX, newY] = [destinationSquare.dataset.x, destinationSquare.dataset.y]
-        let piecePayload = { piece: {
+        let piecePayload = {piece: {
           x_position: newX,
           y_position: newY,
         }};
@@ -61,8 +65,6 @@ document.addEventListener("DOMContentLoaded", function(){
         if (!destinationSquare.innerHTML) {
           destinationSquare.innerHTML = initialSquare.innerHTML
         } else { return; }
-
-        console.log(initialSquare);
 
         initialSquare.innerHTML = "";
         initialSquare.classList.remove("clicked");        
@@ -72,9 +74,7 @@ document.addEventListener("DOMContentLoaded", function(){
         initialSquare.removeEventListener("click", updateActivePiece);
         activePiece = null;
 
-        updatePieceLocation(initialSquare.id, piecePayload);
-
-        console.log(destinationSquare);
+        updatePieceLocation(initialSquare.dataset.pieceId, piecePayload);
       }
     });
   });
