@@ -28,7 +28,6 @@ document.addEventListener("DOMContentLoaded", function(){
   function updateActivePiece() {
     activePiece = event.target;
     activePiece.classList.add("clicked");
-    console.log(activePiece);
   }
 
   //Create payload to send to server
@@ -40,7 +39,7 @@ document.addEventListener("DOMContentLoaded", function(){
         'Content-Type': 'application/json'
       },
       body: JSON.stringify(data),
-    }).then(console.log("Yay!" + JSON.stringify(data)));
+    });
   }
   
   fetchBoard

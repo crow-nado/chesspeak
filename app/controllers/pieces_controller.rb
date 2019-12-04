@@ -17,9 +17,7 @@ class PiecesController < ApplicationController
   end
 
 private
-
-def piece_params
-  params.fetch(:piece).permit(:x_position, :y_position)
-end
-
+  def piece_params
+    params.fetch(:piece).permit(:x_position, :y_position)
+  end
 end
