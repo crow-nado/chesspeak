@@ -13,4 +13,8 @@ class Piece < ApplicationRecord
     return true
     #Piece specific - effectively calling that piece model
   end
+
+  def is_white_piece?
+    player_id == Game.find(self.game_id).white_player_id
+  end
 end
