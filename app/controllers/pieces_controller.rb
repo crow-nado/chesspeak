@@ -10,6 +10,14 @@ class PiecesController < ApplicationController
   end
 
   def update
+    piece = Piece.find(params[:id])
+    if piece.valid_move?
+      piece.update_attributes(piece_params)
+    end
+  end
 
+private
+  def piece_params
+    params.fetch(:piece).permit(:x_position, :y_position)
   end
 end
