@@ -51,8 +51,8 @@ RSpec.describe GamesController, type: :controller do
 
       game.reload
       #Verifies 2nd Player was added to the Game
-      expect(game.black_player_id).to eq(user2.id)
       player2 = User.find_by(id: game.black_player_id)
+      expect(game.black_player_id).to eq(user2.id)
       expect(player2.username).to eq(user2.username)
     end
 
