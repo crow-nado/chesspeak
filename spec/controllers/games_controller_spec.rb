@@ -50,9 +50,20 @@ RSpec.describe GamesController, type: :controller do
       patch :update, params: { id: game.id, game: { black_player_id: user2.id } }
 
       game.reload
-      player2 = User.find_by(id: game.black_player_id)
+      #Verifies 2nd Player was added to the Game
       expect(game.black_player_id).to eq(user2.id)
+      player2 = User.find_by(id: game.black_player_id)
       expect(player2.username).to eq(user2.username)
+    end
+
+    it "will not allow two players with the same ID" do
+      user = FactoryBot.create(:user)
+      game = FactoryBot.create(:game, { white_player_id: user.id})
+      sign_in user
+
+      patch :update, params: { id: game.id, game: { black_player_id: user.id } }
+
+      expect(response).to have_http_status(:unauthorized)
     end
   end
 end

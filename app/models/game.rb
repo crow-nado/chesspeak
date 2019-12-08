@@ -13,6 +13,11 @@ class Game < ApplicationRecord
     populate_black_side
   end
 
+  def assign_black_side
+    black_pieces = Piece.where(game_id: id, player_id: nil)
+    black_pieces.update_all(player_id: black_player_id)
+  end
+
   def populate_white_side
     populate_white_pawns
     populate_white_rooks
