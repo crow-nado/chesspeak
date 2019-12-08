@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Pawn, type: :model do
-  describe "#set_image" do
+  describe "#image" do
     it "sets the pawns image in unicode according to its row" do
       game = Game.create()
       game.populate_white_pawns

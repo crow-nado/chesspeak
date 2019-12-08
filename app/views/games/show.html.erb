@@ -1,21 +1,84 @@
 <script>
-$(function() {
-  $.ajax({
-    type: "GET",
-    url: "<%= board_state_path(@game) %>",
-    dataType: "json",
-    success: function(data){
-      let ranks = ["A", "B", "C", "D", "E", "F", "G", "H"];
-      let files = ["1", "2", "3", "4", "5", "6", "7", "8"];
-      data.forEach( piece => {
-        let pieceRank = ranks[piece.x_position-1];
-        let pieceFile = files[piece.y_position-1];
-        let piecePosition = pieceRank.concat(pieceFile);
-        $(`.${piecePosition}`).html(piece.image);
-      });
-    }
-  })
-})
+document.addEventListener("DOMContentLoaded", function(){
+  let activePiece;
+  let destinationSquare;
+
+  //Setup Promise to Grab board
+  let fetchBoard = fetch("<%= game_pieces_path(@game) %>");
+
+  //Function to populate initial board
+  function renderInitialBoard (json) {
+    json.forEach( piece => {
+      let [x, y] = [piece.x_position, piece.y_position];
+      let boardSquare = document.querySelector(`[data-x='${x}'][data-y='${y}']`);
+      boardSquare.innerHTML = piece.image;
+      boardSquare.setAttribute('data-piece-id', piece.id);
+      boardSquare.addEventListener("click", checkActivePiece);
+      boardSquare.addEventListener("click", updateActivePiece);
+    });
+  };
+
+  //Limit "clicked" to one active piece
+  function checkActivePiece() {
+    let currentSelection = document.querySelector(".clicked");
+    if (currentSelection) { currentSelection.classList.remove("clicked") }
+  }
+
+  //Add clicked to latest selection
+  function updateActivePiece() {
+    activePiece = event.target;
+    activePiece.classList.add("clicked");
+  }
+
+  //Create payload to send to server
+  function updatePieceLocation(pieceID, data) {
+    let gameID = "<%= @game.id %>";
+    fetch("/games/" + gameID + "/pieces/" + pieceID, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data),
+    });
+  }
+  
+  fetchBoard
+    .then(response => response.json())
+    .then(json => renderInitialBoard(json))
+    .catch(error => console.log(error));
+
+
+  // Maybe attach different event handlers depending on the piece type (instead of for each empty div)
+  document.querySelectorAll('div:empty').forEach( box => {
+    box.addEventListener("click", function(event) {
+      if (activePiece) {
+        let initialSquare = activePiece;
+        let destinationSquare = event.target;
+        // let [initialX, initialY] = [initialSquare.dataset.x, initialSquare.dataset.y]
+        let [newX, newY] = [destinationSquare.dataset.x, destinationSquare.dataset.y]
+        let piecePayload = {piece: {
+          x_position: newX,
+          y_position: newY,
+        }};
+
+        if (!destinationSquare.innerHTML) {
+          destinationSquare.innerHTML = initialSquare.innerHTML
+        } else { return; }
+
+        initialSquare.innerHTML = "";
+        initialSquare.classList.remove("clicked");        
+        destinationSquare.addEventListener("click", checkActivePiece);
+        destinationSquare.addEventListener("click", updateActivePiece);
+        initialSquare.removeEventListener("click", checkActivePiece);
+        initialSquare.removeEventListener("click", updateActivePiece);
+        activePiece = null;
+
+        updatePieceLocation(initialSquare.dataset.pieceId, piecePayload);
+      }
+    });
+  });
+
+});
 </script>
 <br />
 
@@ -45,94 +108,94 @@ $(function() {
         <div class="box-inner"></div>
       
         <div class="box-inner">8</div>
-        <div class="A8 box"></div>
-        <div class="B8 box white"></div>
-        <div class="C8 box"></div>
-        <div class="D8 box white"></div>
-        <div class="E8 box"></div>
-        <div class="F8 box white"></div>
-        <div class="G8 box"></div>
-        <div class="H8 box white"></div>
+        <div class="box"       data-x = "1" data-y = "8"></div>
+        <div class="box white" data-x = "2" data-y = "8"></div>
+        <div class="box"       data-x = "3" data-y = "8"></div>
+        <div class="box white" data-x = "4" data-y = "8"></div>
+        <div class="box"       data-x = "5" data-y = "8"></div>
+        <div class="box white" data-x = "6" data-y = "8"></div>
+        <div class="box"       data-x = "7" data-y = "8"></div>
+        <div class="box white" data-x = "8" data-y = "8"></div>
         <div class="box-inner">8</div>
 
 
         <div class="box-inner">7</div>
-        <div class="A7 box white"></div>
-        <div class="B7 box"></div>
-        <div class="C7 box white"></div>
-        <div class="D7 box"></div>
-        <div class="E7 box white"></div>
-        <div class="F7 box"></div>
-        <div class="G7 box white"></div>
-        <div class="H7 box"></div>
+        <div class="box white" data-x="1" data-y="7"></div>
+        <div class="box"       data-x="2" data-y="7"></div>
+        <div class="box white" data-x="3" data-y="7"></div>
+        <div class="box"       data-x="4" data-y="7"></div>
+        <div class="box white" data-x="5" data-y="7"></div>
+        <div class="box"       data-x="6" data-y="7"></div>
+        <div class="box white" data-x="7" data-y="7"></div>
+        <div class="box"       data-x="8" data-y="7"></div>
         <div class="box-inner">7</div>
 
         <div class="box-inner">6</div>
-        <div class="A6 box"></div>
-        <div class="B6 box white"></div>
-        <div class="C6 box"></div>
-        <div class="D6 box white"></div>
-        <div class="E6 box"></div>
-        <div class="F6 box white"></div>
-        <div class="G6 box"></div>
-        <div class="H6 box white"></div>
+        <div class="box"       data-x = "1" data-y = "6"></div>
+        <div class="box white" data-x = "2" data-y = "6"></div>
+        <div class="box"       data-x = "3" data-y = "6"></div>
+        <div class="box white" data-x = "4" data-y = "6"></div>
+        <div class="box"       data-x = "5" data-y = "6"></div>
+        <div class="box white" data-x = "6" data-y = "6"></div>
+        <div class="box"       data-x = "7" data-y = "6"></div>
+        <div class="box white" data-x = "8" data-y = "6"></div>
         <div class="box-inner">6</div>
 
         <div class="box-inner">5</div>
-        <div class="A5 box white"></div>
-        <div class="B5 box"></div>
-        <div class="C5 box white"></div>
-        <div class="D5 box"></div>
-        <div class="E5 box white"></div>
-        <div class="F5 box"></div>
-        <div class="G5 box white"></div>
-        <div class="H5 box"></div>
+        <div class="box white" data-x="1" data-y="5"></div>
+        <div class="box"       data-x="2" data-y="5"></div>
+        <div class="box white" data-x="3" data-y="5"></div>
+        <div class="box"       data-x="4" data-y="5"></div>
+        <div class="box white" data-x="5" data-y="5"></div>
+        <div class="box"       data-x="6" data-y="5"></div>
+        <div class="box white" data-x="7" data-y="5"></div>
+        <div class="box"       data-x="8" data-y="5"></div>
         <div class="box-inner">5</div>
 
         <div class="box-inner">4</div>
-        <div class="A4 box"></div>
-        <div class="B4 box white"></div>
-        <div class="C4 box"></div>
-        <div class="D4 box white"></div>
-        <div class="E4 box"></div>
-        <div class="F4 box white"></div>
-        <div class="G4 box"></div>
-        <div class="H4 box white"></div>
+        <div class="box"       data-x = "1" data-y = "4"></div>
+        <div class="box white" data-x = "2" data-y = "4"></div>
+        <div class="box"       data-x = "3" data-y = "4"></div>
+        <div class="box white" data-x = "4" data-y = "4"></div>
+        <div class="box"       data-x = "5" data-y = "4"></div>
+        <div class="box white" data-x = "6" data-y = "4"></div>
+        <div class="box"       data-x = "7" data-y = "4"></div>
+        <div class="box white" data-x = "8" data-y = "4"></div>
         <div class="box-inner">4</div>
 
         <div class="box-inner">3</div>
-        <div class="A3 box white"></div>
-        <div class="B3 box"></div>
-        <div class="C3 box white"></div>
-        <div class="D3 box"></div>
-        <div class="E3 box white"></div>
-        <div class="F3 box"></div>
-        <div class="G3 box white"></div>
-        <div class="H3 box"></div>
+        <div class="box white" data-x="1" data-y="3"></div>
+        <div class="box"       data-x="2" data-y="3"></div>
+        <div class="box white" data-x="3" data-y="3"></div>
+        <div class="box"       data-x="4" data-y="3"></div>
+        <div class="box white" data-x="5" data-y="3"></div>
+        <div class="box"       data-x="6" data-y="3"></div>
+        <div class="box white" data-x="7" data-y="3"></div>
+        <div class="box"       data-x="8" data-y="3"></div>
         <div class="box-inner">3</div>
 
         <div class="box-inner">2</div>
-        <div class="A2 box"></div>
-        <div class="B2 box white"></div>
-        <div class="C2 box"></div>
-        <div class="D2 box white"></div>
-        <div class="E2 box"></div>
-        <div class="F2 box white"></div>
-        <div class="G2 box"></div>
-        <div class="H2 box white"></div>
+        <div class="box"       data-x = "1" data-y = "2"></div>
+        <div class="box white" data-x = "2" data-y = "2"></div>
+        <div class="box"       data-x = "3" data-y = "2"></div>
+        <div class="box white" data-x = "4" data-y = "2"></div>
+        <div class="box"       data-x = "5" data-y = "2"></div>
+        <div class="box white" data-x = "6" data-y = "2"></div>
+        <div class="box"       data-x = "7" data-y = "2"></div>
+        <div class="box white" data-x = "8" data-y = "2"></div>
         <div class="box-inner">2</div>
 
         <div class="box-inner">1</div>
-        <div class="A1 box white"></div>
-        <div class="B1 box"></div>
-        <div class="C1 box white"></div>
-        <div class="D1 box"></div>
-        <div class="E1 box white"></div>
-        <div class="F1 box"></div>
-        <div class="G1 box white"></div>
-        <div class="H1 box"></div>
+        <div class="box white" data-x="1" data-y="1"></div>
+        <div class="box"       data-x="2" data-y="1"></div>
+        <div class="box white" data-x="3" data-y="1"></div>
+        <div class="box"       data-x="4" data-y="1"></div>
+        <div class="box white" data-x="5" data-y="1"></div>
+        <div class="box"       data-x="6" data-y="1"></div>
+        <div class="box white" data-x="7" data-y="1"></div>
+        <div class="box"       data-x="8" data-y="1"></div>
         <div class="box-inner">1</div>
-
+        
         <div class="box-inner"></div>
         <div class="box-inner">A</div>
         <div class="box-inner">B</div>

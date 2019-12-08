@@ -24,12 +24,16 @@ class GamesController < ApplicationController
 
   def update
     game = Game.find(params[:id])
-    game.update(black_player_id: current_user.id)
-    redirect_to game_path(game)
+    if game.white_player_id != current_user.id
+      game.update(black_player_id: current_user.id)
+      game.assign_black_side
+      redirect_to game_path(game)
+    else
+      render plain: "You are already in this game", status: :unauthorized
+    end
   end
 
 private
-  #Review whether name will be automated or entered by user - consider user stories for how game name is used
   def game_params
     params.require(:game).permit(:name, :white_player_id, :black_player_id)
   end
