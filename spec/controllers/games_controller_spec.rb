@@ -1,8 +1,29 @@
 require 'rails_helper'
 
 RSpec.describe GamesController, type: :controller do
+  describe "games#index" do
+    it "loads a page of available games to join" do
+      user = FactoryBot.create(:user)
+      sign_in user
 
-  describe "POST #create" do
+      get :index
+
+      expect(response).to have_http_status(:success)
+    end
+  end
+
+  describe "games#new" do
+    it "loads a form for a user to create a new game" do
+      user = FactoryBot.create(:user)
+      sign_in user
+
+      get :new
+
+      expect(response).to have_http_status(:success)
+    end
+  end
+
+  describe "games#create" do
     it "creates a new game with the user as Player 1" do
       user = FactoryBot.create(:user)
       sign_in user
@@ -21,6 +42,7 @@ RSpec.describe GamesController, type: :controller do
       expect(game.white_player_id).to eq(user.id)
       expect(player1).to eq(user.username)
     end
+
     it "populates all the game pieces" do
       user = FactoryBot.create(:user)
       sign_in user
@@ -40,7 +62,19 @@ RSpec.describe GamesController, type: :controller do
     end
   end
 
-  describe "game#update" do
+  describe "games#show" do
+    it "should successfully show the page if the game is found" do
+      user = FactoryBot.create(:user)
+      sign_in user
+      game = FactoryBot.create(:game, { white_player_id: user.id})
+
+      get :show, params: { id: game.id }
+
+      expect(response).to have_http_status(:success)
+    end
+  end
+
+  describe "games#update" do
     it "update game with Player 2 as user" do
       user = FactoryBot.create(:user)
       game = FactoryBot.create(:game, { white_player_id: user.id})

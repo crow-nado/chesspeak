@@ -34,7 +34,6 @@ class GamesController < ApplicationController
   end
 
 private
-  #Review whether name will be automated or entered by user - consider user stories for how game name is used
   def game_params
     params.require(:game).permit(:name, :white_player_id, :black_player_id)
   end
