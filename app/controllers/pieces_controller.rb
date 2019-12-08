@@ -13,6 +13,8 @@ class PiecesController < ApplicationController
     piece = Piece.find(params[:id])
     if piece.valid_move?
       piece.update_attributes(piece_params)
+      render json: piece
+    #Else condition to handle response for invalid_moves
     end
   end
 
