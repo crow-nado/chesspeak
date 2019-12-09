@@ -1,9 +1,10 @@
 <script>
 document.addEventListener("DOMContentLoaded", function(){
   let activePiece;
-  let destinationSquare
-  let activePlayer = "<%= @player_white %>";
-  let inactivePlayer = "<%= @player_black %>";
+  let destinationSquare;
+  let activePlayerId = <%= @player_white.id %>;
+  console.log(activePlayerId)
+  let inactivePlayerId = 687413876;
 
   //Setup Promise to Grab board
   let fetchBoard = fetch("<%= game_pieces_path(@game) %>");
@@ -16,21 +17,23 @@ document.addEventListener("DOMContentLoaded", function(){
       boardSquare.innerHTML = piece.image;
       boardSquare.setAttribute('data-piece-id', piece.id);
       boardSquare.setAttribute('data-player-id', piece.player_id);
-      boardSquare.addEventListener("click", checkActivePiece);
+      //boardSquare.addEventListener("click", checkActivePiece);
       boardSquare.addEventListener("click", updateActivePiece);
     });
   };
 
   //Limit "clicked" to one active piece
-  function checkActivePiece() {
+  /*function checkActivePiece() {
     let currentSelection = document.querySelector(".clicked");
     if (currentSelection) { currentSelection.classList.remove("clicked") }
-  }
+  }*/
 
   //Add clicked to latest selection
   function updateActivePiece() {
-    activePiece = event.target;
-    activePiece.classList.add("clicked");
+    if (!activePiece) {
+      activePiece = event.target;
+      activePiece.classList.add("initial");
+    }
   }
 
   //Review Destination Square
@@ -40,13 +43,29 @@ document.addEventListener("DOMContentLoaded", function(){
     }
     square.classList.add("destination");
     if (square.dataset.playerId) {
-      if (activePlayer.id == square.dataset.playerId) {
+      if (activePlayerId == square.dataset.playerId) {
         alert("You can't capture your own piece!");
       } else {
         alert("Success!");
       }
     }
   }
+
+  function clearSelections() {
+    activePiece.classList.remove("initial");
+    document.querySelector(".destination").classList.remove("destination");
+    activePiece = null;
+    document.querySelector(".clear-submit").classList.add("hidden");
+  }
+
+  function submitMove() {
+    activePiece.classList.remove("initial");
+    document.querySelector(".destination").classList.remove("destination");
+    alert("Yay!");
+    activePiece = null;
+    document.querySelector(".clear-submit").classList.add("hidden");
+  }
+
 
   //Create payload to send to server
   function updatePieceLocation(pieceID, data) {
@@ -57,8 +76,7 @@ document.addEventListener("DOMContentLoaded", function(){
         'Content-Type': 'application/json'
       },
       body: JSON.stringify(data),
-    })
-      .then();
+    });
   }
   
   fetchBoard
@@ -72,8 +90,9 @@ document.addEventListener("DOMContentLoaded", function(){
     box.addEventListener("click", function(event) {
       if (activePiece) {
         let initialSquare = activePiece;
-        let destinationSquare = event.target;
+        destinationSquare = event.target;
         checkDestinationSquare(destinationSquare);
+        document.querySelector(".clear-submit").classList.remove("hidden");
 
         // let [initialX, initialY] = [initialSquare.dataset.x, initialSquare.dataset.y]
         let [newX, newY] = [destinationSquare.dataset.x, destinationSquare.dataset.y]
@@ -82,13 +101,15 @@ document.addEventListener("DOMContentLoaded", function(){
           y_position: newY,
         }};
 
+        /* The rest of this should be handled on "Submit"
+
         if (!destinationSquare.innerHTML) {
           destinationSquare.innerHTML = initialSquare.innerHTML
         } else { return; }
 
         destinationSquare.setAttribute("data-player-id", activePlayer.id);
         destinationSquare.setAttribute("data-piece-id", initialSquare.dataset.pieceId);
-        initialSquare.classList.remove("clicked");        
+        initialSquare.classList.remove("initial");        
         destinationSquare.addEventListener("click", checkActivePiece);
         destinationSquare.addEventListener("click", updateActivePiece);
         initialSquare.removeEventListener("click", checkActivePiece);
@@ -99,10 +120,14 @@ document.addEventListener("DOMContentLoaded", function(){
 
         initialSquare.innerHTML = "";
         initialSquare.removeAttribute("data-player-id");
-        initialSquare.removeAttribute("data-player-id");
+        initialSquare.removeAttribute("data-player-id"); */
       }
     });
   });
+
+  document.querySelector(".wipe").addEventListener("click", clearSelections)
+  document.querySelector(".submit").addEventListener("click", submitMove)
+
 
 });
 </script>
@@ -244,5 +269,13 @@ document.addEventListener("DOMContentLoaded", function(){
         <h3> Searching for Opponent...</h3>
     <% end %>
   </div>
+</div>
 
+<div class="grid-x clear-submit hidden align-center">
+  <div class="cell small-3">
+    <button class="button large wipe">Clear</button>
+  </div><br />
+  <div class="cell small-3">
+    <button class="button large submit">Submit</button>
+  </div>
 </div>

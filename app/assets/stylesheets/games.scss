@@ -1,7 +1,11 @@
-.clicked {
+.initial {
   border: solid yellow 2px;
 }
 
 .destination {
   border: solid green 2px;
+}
+
+.hidden {
+  display: none;
 }
