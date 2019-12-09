@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", function(){
   let activePiece;
   let destinationSquare;
   let activePlayerId = <%= @player_white.id %>;
-  console.log(activePlayerId)
+  // Stand in until we find a way to add 2nd player on join. Maybe with Action Cable?
   let inactivePlayerId = 687413876;
 
   //Setup Promise to Grab board
