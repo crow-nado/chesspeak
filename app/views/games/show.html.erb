@@ -114,10 +114,9 @@ document.addEventListener("DOMContentLoaded", function(){
 
 
 <div class="grid-x grid-padding-x align-spaced">
-  <div class="off-canvas position-bottom" id="submitResponse" data-off-canvas>
-    <h3>Is this where you want to move your piece?</h3>
-    <button type="button" class="success button" onClick="movePiece()">Move here!</button>
-    <button type="button" class="button">No</button>
+  <div class="cell large-3 text-center" id="player1">
+    <h3>Player 1 Ready!</h3>
+    <h4><%= @player_white.username %></h4>
   </div>
 
   <div class="cell large-auto">
