@@ -12,12 +12,14 @@ document.addEventListener("DOMContentLoaded", function(){
   //Function to populate initial board
   function renderInitialBoard (json) {
     json.forEach( piece => {
-      let [x, y] = [piece.x_position, piece.y_position];
-      let boardSquare = document.querySelector(`[data-x='${x}'][data-y='${y}']`);
-      boardSquare.innerHTML = piece.image;
-      boardSquare.setAttribute('data-piece-id', piece.id);
-      boardSquare.setAttribute('data-player-id', piece.player_id);
-      boardSquare.addEventListener("click", updateActivePiece);
+      if (piece.x_position && piece.y_position) {
+        let [x, y] = [piece.x_position, piece.y_position];
+        let boardSquare = document.querySelector(`[data-x='${x}'][data-y='${y}']`);
+        boardSquare.innerHTML = piece.image;
+        boardSquare.setAttribute('data-piece-id', piece.id);
+        boardSquare.setAttribute('data-player-id', piece.player_id);
+        boardSquare.addEventListener("click", updateActivePiece);
+      }
     });
   };
 
@@ -31,17 +33,26 @@ document.addEventListener("DOMContentLoaded", function(){
 
   //Review Destination Square
   function checkDestinationSquare(square) {
-    if (document.querySelector(".destination")) {
-      document.querySelector(".destination").classList.remove("destination");
-    }
-    square.classList.add("destination");
     if (square.dataset.playerId) {
       if (activePlayerId == square.dataset.playerId) {
         alert("You can't capture your own piece!");
+        return false;
       } else {
-        alert("Success!");
+        deletePiece(square.dataset.pieceId);
       }
     }
+    return true;
+  }
+
+  function deletePiece(pieceID) {
+    let gameID = "<%= @game.id %>";
+    return fetch("/games/" + gameID + "/pieces/" + pieceID, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({id: pieceID}),
+    });
   }
 
   function clearSelections() {
@@ -53,23 +64,26 @@ document.addEventListener("DOMContentLoaded", function(){
   }
 
   function submitMove() {
-    checkDestinationSquare(destinationSquare);
-    let [newX, newY] = [destinationSquare.dataset.x, destinationSquare.dataset.y]
-    let piecePayload = {piece: {
-      x_position: newX,
-      y_position: newY,
-    }};
-
-    //Trigger Patch request to server
-    submitPieceUpdate(activePiece.dataset.pieceId, piecePayload)
-      .then(() => updatePieceLocation())
-      .then(() => clearSelections())
-      .catch(error => console.log(error));
+    if (checkDestinationSquare(destinationSquare)) {
+      let [newX, newY] = [destinationSquare.dataset.x, destinationSquare.dataset.y]
+      let piecePayload = {piece: {
+        x_position: newX,
+        y_position: newY,
+        }
+      }
+      submitPieceUpdate(activePiece.dataset.pieceId, piecePayload)
+        .then(() => updatePieceLocation())
+        .then(() => clearSelections())
+        .catch(error => console.log(error));
+        //Switch active player ID on valid move
+        [activePlayerId, inactivePlayerId] = [inactivePlayerId, activePlayerId];
+    } else {
+      clearSelections();
+    }
   }
 
   function updatePieceLocation() {
     let initialSquare = activePiece;
-    console.log(initialSquare);
     destinationSquare.innerHTML = initialSquare.innerHTML;
     destinationSquare.setAttribute("data-player-id", activePlayerId);
     destinationSquare.setAttribute("data-piece-id", initialSquare.dataset.pieceId); 
@@ -97,41 +111,16 @@ document.addEventListener("DOMContentLoaded", function(){
     .then(json => renderInitialBoard(json))
     .catch(error => console.log(error));
 
-
   // Maybe attach different event handlers depending on the piece type (instead of for each empty div)
   document.querySelectorAll('.box').forEach( box => {
     box.addEventListener("click", function(event) {
       if (activePiece) {
         destinationSquare = event.target;
         document.querySelector(".clear-submit").classList.remove("hidden");
-
-        // let [initialX, initialY] = [initialSquare.dataset.x, initialSquare.dataset.y]
-        // let [newX, newY] = [destinationSquare.dataset.x, destinationSquare.dataset.y]
-        // let piecePayload = {piece: {
-        //   x_position: newX,
-        //   y_position: newY,
-        // }};
-
-        /* The rest of this should be handled on "Submit"
-
-        if (!destinationSquare.innerHTML) {
-          destinationSquare.innerHTML = initialSquare.innerHTML
-        } else { return; }
-
-        destinationSquare.setAttribute("data-player-id", activePlayer.id);
-        destinationSquare.setAttribute("data-piece-id", initialSquare.dataset.pieceId);
-        initialSquare.classList.remove("initial");        
-        destinationSquare.addEventListener("click", checkActivePiece);
-        destinationSquare.addEventListener("click", updateActivePiece);
-        initialSquare.removeEventListener("click", checkActivePiece);
-        initialSquare.removeEventListener("click", updateActivePiece);
-        activePiece = null;
-
-        updatePieceLocation(initialSquare.dataset.pieceId, piecePayload);
-
-        initialSquare.innerHTML = "";
-        initialSquare.removeAttribute("data-player-id");
-        initialSquare.removeAttribute("data-player-id"); */
+        if (document.querySelector(".destination")) {
+          document.querySelector(".destination").classList.remove("destination");
+        }
+        destinationSquare.classList.add("destination");
       }
     });
   });

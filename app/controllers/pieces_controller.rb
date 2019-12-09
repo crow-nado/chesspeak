@@ -18,6 +18,12 @@ class PiecesController < ApplicationController
     end
   end
 
+  def destroy
+    captured_piece = Piece.find(params[:id])
+    captured_piece.update_attributes(x_position: nil, y_position: nil)
+    head 200
+  end
+
 private
   def piece_params
     params.fetch(:piece).permit(:x_position, :y_position)
