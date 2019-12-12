@@ -1,8 +1,14 @@
 class PiecesController < ApplicationController
   skip_before_action :verify_authenticity_token
+
+  #Fetch request for pieces
   def index
     @game = Game.find(params[:game_id])
-    render json: @game.pieces
+    if @game.black_player_id && @game.white_player_id
+      render json: @game.pieces
+    else
+      render status: :not_found
+    end
   end
 
   def show

@@ -12,7 +12,7 @@ class GamesController < ApplicationController
 
   def create
     @game = Game.create(game_params.merge(white_player_id: current_user.id))
-    @game.populate!
+    @game.populate_white_side
     redirect_to game_path(@game)
   end
 
@@ -26,7 +26,8 @@ class GamesController < ApplicationController
     game = Game.find(params[:id])
     if game.white_player_id != current_user.id
       game.update(black_player_id: current_user.id)
-      game.assign_black_side
+      @player_black = User.find_by(id: @game.black_player_id)
+      game.populate_black_side
       redirect_to game_path(game)
     else
       render plain: "You are already in this game", status: :unauthorized

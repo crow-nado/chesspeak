@@ -2,9 +2,8 @@
 document.addEventListener("DOMContentLoaded", function(){
   let activePiece;
   let destinationSquare;
-  let activePlayerId = <%= @player_white.id %>;
-  // Stand in until we find a way to add 2nd player on join. Maybe with Action Cable?
-  let inactivePlayerId = 687413876;
+  let activePlayerId = "white";
+  let inactivePlayerId = "black";
 
   //Setup Promise to Grab board
   let fetchBoard = fetch("<%= game_pieces_path(@game) %>");
@@ -106,9 +105,20 @@ document.addEventListener("DOMContentLoaded", function(){
     });
   }
   
+
   fetchBoard
-    .then(response => response.json())
-    .then(json => renderInitialBoard(json))
+    .then(response => {
+      if (response >= 200 && response < 400) {
+        let json = response.json();
+        renderInitialBoard(json);
+        activePlayerId = <%= @player_white.id %>;
+        if (<%= @player_black.present? %>) {
+          inactivePlayerId = <%= @player_black.id %>;
+        }
+      } else {
+        alert(response.status);
+      }
+    })
     .catch(error => console.log(error));
 
   // Maybe attach different event handlers depending on the piece type (instead of for each empty div)
