@@ -4,11 +4,7 @@ class PiecesController < ApplicationController
   #Fetch request for pieces
   def index
     @game = Game.find(params[:game_id])
-    if @game.black_player_id && @game.white_player_id
-      render json: @game.pieces
-    else
-      render status: :not_found
-    end
+    render json: @game.pieces
   end
 
   def show

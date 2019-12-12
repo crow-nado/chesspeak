@@ -26,7 +26,6 @@ class GamesController < ApplicationController
     game = Game.find(params[:id])
     if game.white_player_id != current_user.id
       game.update(black_player_id: current_user.id)
-      @player_black = User.find_by(id: @game.black_player_id)
       game.populate_black_side
       redirect_to game_path(game)
     else

@@ -5,7 +5,7 @@ class Piece < ApplicationRecord
   attr_accessor :image
 
   def as_json(options={})
-    super(only: [:id, :x_position, :y_position, :player_id, :piece_type, :image],
+    super(only: [:id, :x_position, :y_position, :player_id, :piece_type, :image, :color],
           methods: [:image])
   end
 

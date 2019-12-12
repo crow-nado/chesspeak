@@ -53,7 +53,7 @@ describe "game setup", type: :feature do
     game = Game.last
     expect(page).to have_content('Test Game')
     expect(game.pawns.find_by(y_position: 2)).to be_instance_of(Pawn)
-    expect(game.pieces.count).to eq 32
+    expect(game.pieces.count).to eq 16
     expect(page).to have_content("Player 1 Ready!")
   end
 
