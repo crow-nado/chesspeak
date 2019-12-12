@@ -56,6 +56,7 @@ RSpec.describe GamesController, type: :controller do
       game = Game.last
       expect(game.pieces.count).to eq 16
     end
+
     it "doesn't let a user create a game before signing in" do
       post :create
       expect(response).to redirect_to(new_user_session_path)
@@ -63,7 +64,7 @@ RSpec.describe GamesController, type: :controller do
   end
 
   describe "games#show" do
-    it "should successfully show the page if the game is found" do
+    it "should successfully show the game board if the game is found" do
       user = FactoryBot.create(:user)
       sign_in user
       game = FactoryBot.create(:game, { white_player_id: user.id})
@@ -83,7 +84,8 @@ RSpec.describe GamesController, type: :controller do
 
       patch :update, params: { id: game.id, game: { black_player_id: user2.id } }
 
-      game.reload
+      expect(response).to redirect_to game_path(game.id)
+      game = game.reload
       #Verifies 2nd Player was added to the Game
       player2 = User.find_by(id: game.black_player_id)
       expect(game.black_player_id).to eq(user2.id)
