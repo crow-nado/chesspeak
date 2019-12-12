@@ -1,5 +1,7 @@
 class PiecesController < ApplicationController
   skip_before_action :verify_authenticity_token
+
+  #Fetch request for pieces
   def index
     @game = Game.find(params[:game_id])
     render json: @game.pieces
@@ -16,6 +18,12 @@ class PiecesController < ApplicationController
       render json: piece
     #Else condition to handle response for invalid_moves
     end
+  end
+
+  def destroy
+    captured_piece = Piece.find(params[:id])
+    captured_piece.update_attributes(x_position: nil, y_position: nil)
+    head 200
   end
 
 private

@@ -2,38 +2,102 @@
 document.addEventListener("DOMContentLoaded", function(){
   let activePiece;
   let destinationSquare;
+  let activePlayer = "white";
+  let inactivePlayer = "black";
 
   //Setup Promise to Grab board
   let fetchBoard = fetch("<%= game_pieces_path(@game) %>");
 
   //Function to populate initial board
   function renderInitialBoard (json) {
+    console.log(json);
     json.forEach( piece => {
-      let [x, y] = [piece.x_position, piece.y_position];
-      let boardSquare = document.querySelector(`[data-x='${x}'][data-y='${y}']`);
-      boardSquare.innerHTML = piece.image;
-      boardSquare.setAttribute('data-piece-id', piece.id);
-      boardSquare.addEventListener("click", checkActivePiece);
-      boardSquare.addEventListener("click", updateActivePiece);
+      if (piece.x_position && piece.y_position) {
+        let [x, y] = [piece.x_position, piece.y_position];
+        let boardSquare = document.querySelector(`[data-x='${x}'][data-y='${y}']`);
+        boardSquare.innerHTML = piece.image;
+        boardSquare.setAttribute('data-piece-id', piece.id);
+        boardSquare.setAttribute('data-color', piece.color);
+        boardSquare.addEventListener("click", updateActivePiece);
+      }
     });
   };
 
-  //Limit "clicked" to one active piece
-  function checkActivePiece() {
-    let currentSelection = document.querySelector(".clicked");
-    if (currentSelection) { currentSelection.classList.remove("clicked") }
-  }
-
   //Add clicked to latest selection
   function updateActivePiece() {
-    activePiece = event.target;
-    activePiece.classList.add("clicked");
+    if (!activePiece && event.target.dataset.color == activePlayer) {
+      activePiece = event.target;
+      activePiece.classList.add("initial");
+    }
   }
 
-  //Create payload to send to server
-  function updatePieceLocation(pieceID, data) {
+  //Review Destination Square
+  function checkDestinationSquare(square) {
+    if (square.dataset.color) {
+      if (activePlayer == square.dataset.color) {
+        alert("You can't capture your own piece!");
+        return false;
+      } else {
+        deletePiece(square.dataset.pieceId);
+      }
+    }
+    return true;
+  }
+
+  function deletePiece(pieceID) {
     let gameID = "<%= @game.id %>";
-    fetch("/games/" + gameID + "/pieces/" + pieceID, {
+    return fetch("/games/" + gameID + "/pieces/" + pieceID, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({id: pieceID}),
+    });
+  }
+
+  function clearSelections() {
+    activePiece.classList.remove("initial");
+    document.querySelector(".destination").classList.remove("destination");
+    activePiece = null;
+    destinationSquare = null;
+    document.querySelector(".clear-submit").classList.add("hidden");
+  }
+
+  function submitMove() {
+    if (checkDestinationSquare(destinationSquare)) {
+      let [newX, newY] = [destinationSquare.dataset.x, destinationSquare.dataset.y]
+      let piecePayload = {piece: {
+        x_position: newX,
+        y_position: newY,
+        }
+      }
+      submitPieceUpdate(activePiece.dataset.pieceId, piecePayload)
+        .then(() => updatePieceLocation())
+        .then(() => clearSelections())
+        .catch(error => console.log(error));
+    } else {
+      clearSelections();
+    }
+  }
+
+  function updatePieceLocation() {
+    let initialSquare = activePiece;
+    destinationSquare.innerHTML = initialSquare.innerHTML;
+    destinationSquare.setAttribute("data-color", activePlayer);
+    destinationSquare.setAttribute("data-piece-id", initialSquare.dataset.pieceId); 
+    destinationSquare.addEventListener("click", updateActivePiece);
+
+    initialSquare.innerHTML = "";
+    initialSquare.removeAttribute("data-color");
+    initialSquare.removeAttribute("data-piece-id");
+    initialSquare.removeEventListener("click", updateActivePiece);
+
+    [activePlayer, inactivePlayer] = [inactivePlayer, activePlayer];
+  }
+
+  function submitPieceUpdate(pieceID, data) {
+    let gameID = "<%= @game.id %>";
+    return fetch("/games/" + gameID + "/pieces/" + pieceID, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json'
@@ -42,42 +106,27 @@ document.addEventListener("DOMContentLoaded", function(){
     });
   }
   
+
   fetchBoard
     .then(response => response.json())
-    .then(json => renderInitialBoard(json))
+    .then (json => renderInitialBoard(json))
     .catch(error => console.log(error));
 
-
   // Maybe attach different event handlers depending on the piece type (instead of for each empty div)
-  document.querySelectorAll('div:empty').forEach( box => {
+  document.querySelectorAll('.box').forEach( box => {
     box.addEventListener("click", function(event) {
       if (activePiece) {
-        let initialSquare = activePiece;
-        let destinationSquare = event.target;
-        // let [initialX, initialY] = [initialSquare.dataset.x, initialSquare.dataset.y]
-        let [newX, newY] = [destinationSquare.dataset.x, destinationSquare.dataset.y]
-        let piecePayload = {piece: {
-          x_position: newX,
-          y_position: newY,
-        }};
-
-        if (!destinationSquare.innerHTML) {
-          destinationSquare.innerHTML = initialSquare.innerHTML
-        } else { return; }
-
-        initialSquare.innerHTML = "";
-        initialSquare.classList.remove("clicked");        
-        destinationSquare.addEventListener("click", checkActivePiece);
-        destinationSquare.addEventListener("click", updateActivePiece);
-        initialSquare.removeEventListener("click", checkActivePiece);
-        initialSquare.removeEventListener("click", updateActivePiece);
-        activePiece = null;
-
-        updatePieceLocation(initialSquare.dataset.pieceId, piecePayload);
+        destinationSquare = event.target;
+        document.querySelector(".clear-submit").classList.remove("hidden");
+        if (document.querySelector(".destination")) {
+          document.querySelector(".destination").classList.remove("destination");
+        }
+        destinationSquare.classList.add("destination");
       }
     });
   });
-
+  document.querySelector(".wipe").addEventListener("click", clearSelections)
+  document.querySelector(".submit").addEventListener("click", submitMove)
 });
 </script>
 <br />
@@ -218,5 +267,13 @@ document.addEventListener("DOMContentLoaded", function(){
         <h3> Searching for Opponent...</h3>
     <% end %>
   </div>
+</div>
 
+<div class="grid-x clear-submit hidden align-center">
+  <div class="cell small-3">
+    <button class="button large wipe">Clear</button>
+  </div><br />
+  <div class="cell small-3">
+    <button class="button large submit">Submit</button>
+  </div>
 </div>

@@ -43,7 +43,7 @@ RSpec.describe GamesController, type: :controller do
       expect(player1).to eq(user.username)
     end
 
-    it "populates all the game pieces" do
+    it "populates white game pieces" do
       user = FactoryBot.create(:user)
       sign_in user
 
@@ -54,7 +54,7 @@ RSpec.describe GamesController, type: :controller do
       }
 
       game = Game.last
-      expect(game.pieces.count).to eq 32
+      expect(game.pieces.count).to eq 16
     end
     it "doesn't let a user create a game before signing in" do
       post :create
