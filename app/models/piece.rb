@@ -3,6 +3,7 @@ class Piece < ApplicationRecord
   self.inheritance_column = 'piece_type'
   belongs_to :game
   attr_accessor :image
+  after_create :get_starting_location
 
   def as_json(options={})
     super(only: [:id, :x_position, :y_position, :player_id, :piece_type, :image, :color],
@@ -16,4 +17,16 @@ class Piece < ApplicationRecord
   def is_white_piece?
     color == "white"
   end
+
+  def has_been_moved?
+    [self.x_position, self.y_position] != @starting_location
+  end
+
+  private
+
+  def get_starting_location
+    @starting_location = [self.x_position, self.y_position]
+  end
+
+
 end
