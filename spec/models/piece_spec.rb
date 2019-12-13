@@ -2,10 +2,9 @@ require 'rails_helper'
 
 RSpec.describe Piece, type: :model do
   describe "#is_white_piece?" do
-    it "tells a piece its color based on its player_id" do
-      game = Game.create(white_player_id: 1, black_player_id: 2)
-      white_piece = game.pieces.create(player_id: 1)
-      black_piece = game.pieces.create(player_id: 2)
+    it "checks if the piece is white" do
+      white_piece = FactoryBot.create :sample_white_pawn
+      black_piece = FactoryBot.create :sample_black_pawn
       expect(white_piece.is_white_piece?).to be true
       expect(black_piece.is_white_piece?).to be false
     end

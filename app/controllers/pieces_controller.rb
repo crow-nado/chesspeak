@@ -13,10 +13,13 @@ class PiecesController < ApplicationController
 
   def update
     piece = Piece.find(params[:id])
-    if piece.valid_move?
+    new_x = piece_params[:x_position].to_i
+    new_y = piece_params[:y_position].to_i
+    if piece.valid_move?(new_x, new_y)
       piece.update_attributes(piece_params)
       render json: piece
-    #Else condition to handle response for invalid_moves
+    else
+      #Else condition to handle response for invalid_moves
     end
   end
 
