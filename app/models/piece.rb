@@ -9,12 +9,11 @@ class Piece < ApplicationRecord
           methods: [:image])
   end
 
-  def valid_move?
-    return true
-    #Piece specific - effectively calling that piece model
+  def valid_move?(x, y)
+    valid_moves.include?({x: x, y: y})
   end
 
   def is_white_piece?
-    player_id == Game.find(self.game_id).white_player_id
+    color == "white"
   end
 end

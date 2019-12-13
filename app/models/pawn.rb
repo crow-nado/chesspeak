@@ -6,4 +6,18 @@ class Pawn < Piece
     self.image = "&#9823"
   end
 
+  private
+
+  def valid_moves
+    if self.is_white_piece?
+      [
+        {x: self.x_position, y: self.y_position+1}
+      ]
+    else
+      [
+        {x: self.x_position, y: self.y_position-1}
+      ]
+    end
+  end
+
 end
