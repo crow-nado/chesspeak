@@ -49,7 +49,7 @@ RSpec.describe Pawn, type: :model do
         white_pawn = FactoryBot.create :sample_white_pawn,
                      x_position: 3, y_position: 3
         
-        expect(white_pawn.valid_move?(4,4)).to be false
+        expect(white_pawn.valid_move?(2,4)).to be false
       end
     end
     context "black piece" do
@@ -91,7 +91,7 @@ RSpec.describe Pawn, type: :model do
         black_pawn = FactoryBot.create :sample_black_pawn,
                      x_position: 3, y_position: 3
 
-        expect(black_pawn.valid_move?(2,2)).to be false
+        expect(black_pawn.valid_move?(4,2)).to be false
       end
     end
   end

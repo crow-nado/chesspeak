@@ -10,7 +10,7 @@ RSpec.describe Piece, type: :model do
     end
   end
 
-  describe "#has_been_moved?" do
+  describe "#first_move?" do
     it "checks if the piece has been moved" do
       piece = FactoryBot.create :sample_black_pawn
       expect(piece.first_move?).to be true
