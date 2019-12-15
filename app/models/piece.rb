@@ -3,10 +3,6 @@ class Piece < ApplicationRecord
   self.inheritance_column = 'piece_type'
   belongs_to :game
   attr_accessor :image
-  attr_accessor :move_count
-  after_update :mark_as_moved
-
-  @move_count = 0
 
   def as_json(options={})
     super(only: [:id, :x_position, :y_position, :player_id, :piece_type, :image, :color],
@@ -21,15 +17,14 @@ class Piece < ApplicationRecord
     color == "white"
   end
 
-  def has_been_moved? 
-    @move_count == 1
+  def first_move?
+    if created_at == updated_at
+      return true
+    else
+      return false
+    end
   end
 
   private
-
-  def mark_as_moved
-    @move_count = 1
-  end
-
 
 end

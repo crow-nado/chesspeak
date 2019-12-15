@@ -1,6 +1,5 @@
 class PiecesController < ApplicationController
   skip_before_action :verify_authenticity_token
-
   #Fetch request for pieces
   def index
     @game = Game.find(params[:game_id])
@@ -17,6 +16,7 @@ class PiecesController < ApplicationController
     new_y = piece_params[:y_position].to_i
     if piece.valid_move?(new_x, new_y)
       piece.update_attributes(piece_params)
+      piece.update_attribute(:updated_at, Time.now)
       render json: piece
     else
       #Else condition to handle response for invalid_moves

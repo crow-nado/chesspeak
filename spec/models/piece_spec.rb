@@ -13,10 +13,10 @@ RSpec.describe Piece, type: :model do
   describe "#has_been_moved?" do
     it "checks if the piece has been moved" do
       piece = FactoryBot.create :sample_black_pawn
-      expect(piece.has_been_moved?).to be false
+      expect(piece.first_move?).to be true
 
       piece.update_attributes(x_position: 2)
-      expect(piece.has_been_moved?).to be true
+      expect(piece.first_move?).to be false
     end
   end
 end

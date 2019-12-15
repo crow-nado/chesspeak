@@ -21,6 +21,20 @@ RSpec.describe Pawn, type: :model do
                      x_position: 3, y_position: 3
         expect(white_pawn.valid_move?(3,2)).to be false
       end
+
+      it "can move forward two spaces the first time it is moved" do
+        white_pawn = FactoryBot.create :sample_white_pawn,
+                     x_position: 3, y_position: 3
+        expect(white_pawn.valid_move?(3,5)).to be true
+      end
+
+      it "cannot move forward two spaces after it has been moved" do
+        white_pawn = FactoryBot.create :sample_white_pawn,
+                     x_position: 3, y_position: 3
+        white_pawn.update_attributes({ x_position: 3, y_position: 4})
+
+        expect(white_pawn.valid_move?(3,6)).to be false
+      end
     end
     context "black piece" do
       it "can move forward" do
@@ -32,6 +46,20 @@ RSpec.describe Pawn, type: :model do
         black_pawn = FactoryBot.create :sample_black_pawn,
                      x_position: 3, y_position: 3
         expect(black_pawn.valid_move?(3,4)).to be false
+      end
+
+      it "can move forward two spaces the first time it is moved" do
+        black_pawn = FactoryBot.create :sample_black_pawn,
+                     x_position: 3, y_position: 4
+        expect(black_pawn.valid_move?(3,2)).to be true
+      end
+
+      it "cannot move forward two spaces after it has been moved" do
+        black_pawn = FactoryBot.create :sample_black_pawn,
+                     x_position: 3, y_position: 4
+        black_pawn.update_attributes({ x_position: 3, y_position: 3})
+
+        expect(black_pawn.valid_move?(3,1)).to be false
       end
     end
   end

@@ -9,15 +9,14 @@ class Pawn < Piece
   private
 
   def valid_moves
+    valid_moves = []
     if self.is_white_piece?
-      [
-        {x: self.x_position, y: self.y_position+1}
-      ]
+      valid_moves.push({x: self.x_position, y: self.y_position+1})
+      valid_moves.push({x: self.x_position, y: self.y_position+2}) if self.first_move?
     else
-      [
-        {x: self.x_position, y: self.y_position-1}
-      ]
+      valid_moves.push({x: self.x_position, y: self.y_position-1})
+      valid_moves.push({x: self.x_position, y: self.y_position-2}) if self.first_move?
     end
+    return valid_moves
   end
-
 end
