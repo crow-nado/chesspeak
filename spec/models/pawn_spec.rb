@@ -36,14 +36,15 @@ RSpec.describe Pawn, type: :model do
         expect(white_pawn.valid_move?(3,6)).to be false
       end
 
-      # it "can capture a black pawn diagonally" do
-      #   white_pawn = FactoryBot.create :sample_white_pawn,
-      #                x_position: 3, y_position: 3
-      #   black_pawn = FactoryBot.create :sample_black_pawn,
-      #                x_position: 4, y_position: 4
+      fit "can capture a black pawn diagonally" do
+        white_pawn = FactoryBot.create :sample_white_pawn,
+                     x_position: 3, y_position: 3
+        black_pawn = FactoryBot.create :sample_black_pawn,
+                     x_position: 4, y_position: 4
 
-      #   expect(white_pawn.valid_move?(4,4)).to be true
-      # end
+        # expect(self.game.check_square(black_pawn.x_position, black_pawn.y_position)).to be_instance_of(Pawn)
+        expect(white_pawn.valid_move?(black_pawn.x_position, black_pawn.y_position)).to be true
+      end
 
       # it "cannot move diagonally if it cannot capture a black pawn" do
       #   white_pawn = FactoryBot.create :sample_white_pawn,
@@ -96,14 +97,56 @@ RSpec.describe Pawn, type: :model do
     end
   end
 
-  # describe "#can_capture?" do
-  #   it "checks if there is a piece in that spot and it is not yours" do
-  #     white_pawn = FactoryBot.create :sample_white_pawn,
-  #                  x_position: 3, y_position: 3
-  #     black_pawn = FactoryBot.create :sample_black_pawn,
-  #                  x_position: 4, y_position: 4
+  describe "#has_enemy_diagonal" do
+    context "white piece" do
+      fit "says whether a white piece has an enemy black pawn in a diagonal square" do
+        game = FactoryBot.create(:sample_game)
+        white_pawn = FactoryBot.create :sample_white_pawn,
+                       x_position: 3, y_position: 3, game_id: game.id
+        black_pawn = FactoryBot.create :sample_black_pawn,
+                       x_position: 4, y_position: 4, game_id: game.id
+        
+        expect(white_pawn.has_enemy_diagonal).to be true
+      end
 
-  #     expect(white_pawn.can_capture?(black_pawn.x_position, black_pawn.y_position, black_pawn.color)).to be true
-  #   end
-  # end
+      fit "returns false if it is the player's own piece in the specified square" do
+        game = FactoryBot.create(:sample_game)
+        white_pawn = FactoryBot.create :sample_white_pawn,
+                        x_position: 3, y_position: 3, game_id: game.id
+        white_pawn2 = FactoryBot.create :sample_white_pawn,
+                        x_position: 4, y_position: 4, game_id: game.id
+        
+        expect(white_pawn.has_enemy_diagonal).to be false
+      end
+
+      fit "returns false if there is no piece in the specified square" do
+        game = FactoryBot.create(:sample_game)
+        white_pawn = FactoryBot.create :sample_white_pawn,
+                        x_position: 3, y_position: 3, game_id: game.id
+
+        expect(white_pawn.has_enemy_diagonal).to be false
+      end
+    end
+    context "black piece" do
+       it "says whether a black piece has an enemy white pawn in a diagonal square" do
+        game = FactoryBot.create(:sample_game)
+        white_pawn = FactoryBot.create :sample_white_pawn,
+                       x_position: 2, y_position: 2, game_id: game.id
+        black_pawn = FactoryBot.create :sample_black_pawn,
+                       x_position: 3, y_position: 3, game_id: game.id
+        
+        expect(black_pawn.has_enemy_diagonal).to be true
+      end
+
+      it "returns false if it is the player's own piece in the specified square" do
+        game = FactoryBot.create(:sample_game)
+        black_pawn = FactoryBot.create :sample_black_pawn,
+                       x_position: 3, y_position: 3, game_id: game.id
+        black_pawn2 = FactoryBot.create :sample_black_pawn,
+                       x_position: 2, y_position: 2, game_id: game.id
+        
+        expect(black_pawn.has_enemy_diagonal).to be false
+      end
+    end
+  end
 end

@@ -11,12 +11,34 @@ class Pawn < Piece
     if self.is_white_piece?
       valid_moves.push({x: self.x_position, y: self.y_position+1})
       valid_moves.push({x: self.x_position, y: self.y_position+2}) if self.first_move?
-      # valid_moves.push({x: self.x_position+1, y: self.y_position+1}) 
+      # Determine the color of the found piece, and whether it's an opposing piece
+      # valid_moves.push({x: self.x_position+1, y: self.y_position+1})
       # valid_moves.push({x: self.x_position-1, y: self.y_position+1})
     else
       valid_moves.push({x: self.x_position, y: self.y_position-1})
       valid_moves.push({x: self.x_position, y: self.y_position-2}) if self.first_move?
     end
     return valid_moves
+  end
+
+  def has_enemy_diagonal
+    if self.is_white_piece?
+      if self.game.check_square(self.x_position+1, self.y_position+1).nil?
+        return false
+      end
+      square = !self.game.check_square(self.x_position+1, self.y_position+1).is_white_piece?
+    else
+      return self.game.check_square(self.x_position-1, self.y_position-1).is_white_piece?
+    end
+  end
+
+  def add_enemy_diagonal
+    if self.is_white_piece?
+      #Right diagonal
+      left = self.game.check_square(self.x_position+1, self.y_position+1)
+      if !left.nil? && left.color != self.color then self.valid_moves.push(left.x_position, left.y_position) end
+      right = self.game.check_square(self.x_position-1, self.y_position+1)
+      if !right.nil? && right.color != self.color then self.valid_moves.push(right.x_position, right.y_position) end
+    end
   end
 end
