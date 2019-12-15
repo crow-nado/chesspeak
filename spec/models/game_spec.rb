@@ -26,4 +26,14 @@ RSpec.describe Game, type: :model do
       expect(Game.available.count).to eq 1
     end
   end
+
+  describe "#check_square" do
+    it "gives the piece at a specific coordinate" do
+      game = FactoryBot.create :sample_game
+      game.populate_white_pawns
+      pawn = game.pieces.first
+
+      expect(game.check_square(pawn.x_position, pawn.y_position)).to be_instance_of(Pawn)
+    end
+  end
 end
