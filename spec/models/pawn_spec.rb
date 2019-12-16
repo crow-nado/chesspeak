@@ -99,7 +99,7 @@ RSpec.describe Pawn, type: :model do
 
   describe "#has_enemy_diagonal" do
     context "white piece" do
-      fit "says whether a white piece has an enemy black pawn in a diagonal square" do
+      it "says whether a white piece has an enemy black pawn in a diagonal square" do
         game = FactoryBot.create(:sample_game)
         white_pawn = FactoryBot.create :sample_white_pawn,
                        x_position: 3, y_position: 3, game_id: game.id
@@ -109,7 +109,7 @@ RSpec.describe Pawn, type: :model do
         expect(white_pawn.has_enemy_diagonal).to be true
       end
 
-      fit "returns false if it is the player's own piece in the specified square" do
+      it "returns false if it is the player's own piece in the specified square" do
         game = FactoryBot.create(:sample_game)
         white_pawn = FactoryBot.create :sample_white_pawn,
                         x_position: 3, y_position: 3, game_id: game.id
@@ -119,7 +119,7 @@ RSpec.describe Pawn, type: :model do
         expect(white_pawn.has_enemy_diagonal).to be false
       end
 
-      fit "returns false if there is no piece in the specified square" do
+      it "returns false if there is no piece in the specified square" do
         game = FactoryBot.create(:sample_game)
         white_pawn = FactoryBot.create :sample_white_pawn,
                         x_position: 3, y_position: 3, game_id: game.id
@@ -147,6 +147,18 @@ RSpec.describe Pawn, type: :model do
         
         expect(black_pawn.has_enemy_diagonal).to be false
       end
+    end
+  end
+
+
+  describe "#add_enemy_diagonal" do
+    fit "should update valid_moves with a diagonal square occupied by an enemy" do
+      game = FactoryBot.create(:sample_game)
+      white_pawn = FactoryBot.create :sample_white_pawn,
+                  x_position: 3, y_position: 3, game_id: game.id
+      black_pawn = FactoryBot.create :sample_black_pawn,
+                  x_position: 4, y_position: 4, game_id: game.id 
+      expect(white_pawn.valid_moves).to include({ x: 4, y: 4 })
     end
   end
 end
