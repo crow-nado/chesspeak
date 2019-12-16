@@ -9,12 +9,63 @@ class Piece < ApplicationRecord
           methods: [:image])
   end
 
-  def valid_move?
-    return true
-    #Piece specific - effectively calling that piece model
+  def valid_move?(x, y)
+    valid_moves.include?({x: x, y: y}) && in_boundary?(x, y)
   end
 
   def is_white_piece?
-    player_id == Game.find(self.game_id).white_player_id
+    color == "white"
+  end
+
+  def first_move?
+    if created_at == updated_at
+      return true
+    else
+      return false
+    end
+  end
+
+  def is_obstructed_vertical?(x, y)
+    range = y_range(y)
+    range.each do |n|
+      return true if square_occupied?(x, n)
+    end
+    return false
+  end
+
+  def is_obstructed_horizontal?(x, y)
+    range = x_range(x)
+    range.each do |n|
+      return true if square_occupied?(n, y)
+    end
+    return false
+  end
+
+  def is_obstructed_diagonal?(x, y)
+    x_axis = x_range(x)
+    y_axis = y_range(y)
+    combined_range = x_axis.zip(y_axis)
+
+    combined_range.each do |pair|
+      return true if square_occupied?(pair[0], pair[1])
+    end
+
+  end
+
+  private
+  def in_boundary?(x, y)
+    x <= 7 && x>=0 && y <= 7 && y>=0
+  end
+
+  def x_range(x)
+    self.x_position > x ? (x+1..self.x_position-1) : (self.x_position+1..x-1)
+  end
+
+  def y_range(y)
+    self.y_position > y ? (y+1..self.y_position-1) : (self.y_position+1..y-1)
+  end
+
+  def square_occupied?(x, y)
+    !self.game.check_square(x, y).nil?
   end
 end

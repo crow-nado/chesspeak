@@ -87,4 +87,8 @@ class Game < ApplicationRecord
       self.pieces.create(x_position: column+1, y_position: row)
     end
   end
+
+  def check_square(x, y)
+    self.pieces.find_by(x_position: x, y_position: y)
+  end
 end

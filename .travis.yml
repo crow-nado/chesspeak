@@ -2,8 +2,10 @@ language: ruby
 dist: trusty
 rvm:
   - 2.5.3
+before_install:
+  - gem install bundler -v '2.0.2'
 before_script:
-  - gem update --system
+  - gem update --system '3.0.6'
   - bundle exec rake db:create --all
   - bundle exec rake db:migrate
 script:
