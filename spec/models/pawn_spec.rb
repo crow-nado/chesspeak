@@ -36,22 +36,14 @@ RSpec.describe Pawn, type: :model do
         expect(white_pawn.valid_move?(3,6)).to be false
       end
 
-      fit "can capture a black pawn diagonally" do
+      it "can capture a black pawn diagonally" do
+        game = FactoryBot.create(:sample_game)
         white_pawn = FactoryBot.create :sample_white_pawn,
-                     x_position: 3, y_position: 3
+                        x_position: 3, y_position: 3, game_id: game.id
         black_pawn = FactoryBot.create :sample_black_pawn,
-                     x_position: 4, y_position: 4
-
-        # expect(self.game.check_square(black_pawn.x_position, black_pawn.y_position)).to be_instance_of(Pawn)
+                        x_position: 4, y_position: 4, game_id: game.id
         expect(white_pawn.valid_move?(black_pawn.x_position, black_pawn.y_position)).to be true
       end
-
-      # it "cannot move diagonally if it cannot capture a black pawn" do
-      #   white_pawn = FactoryBot.create :sample_white_pawn,
-      #                x_position: 3, y_position: 3
-        
-      #   expect(white_pawn.valid_move?(2,4)).to be false
-      # end
     end
     context "black piece" do
       it "can move forward" do
@@ -79,73 +71,14 @@ RSpec.describe Pawn, type: :model do
         expect(black_pawn.valid_move?(3,1)).to be false
       end
 
-      # it "can capture a white pawn diagonally" do
-      #   black_pawn = FactoryBot.create :sample_black_pawn,
-      #                x_position: 3, y_position: 3
-      #   white_pawn = FactoryBot.create :sample_white_pawn,
-      #                x_position: 2, y_position: 2
-
-      #   expect(black_pawn.valid_move?(2,2)).to be true
-      # end
-
-      # it "cannot move diagonally if it cannot capture a white pawn" do
-      #   black_pawn = FactoryBot.create :sample_black_pawn,
-      #                x_position: 3, y_position: 3
-
-      #   expect(black_pawn.valid_move?(4,2)).to be false
-      # end
-    end
-  end
-
-  describe "#has_enemy_diagonal" do
-    context "white piece" do
-      it "says whether a white piece has an enemy black pawn in a diagonal square" do
+      it "can capture a white pawn diagonally" do
         game = FactoryBot.create(:sample_game)
-        white_pawn = FactoryBot.create :sample_white_pawn,
-                       x_position: 3, y_position: 3, game_id: game.id
         black_pawn = FactoryBot.create :sample_black_pawn,
-                       x_position: 4, y_position: 4, game_id: game.id
-        
-        expect(white_pawn.has_enemy_diagonal).to be true
-      end
-
-      it "returns false if it is the player's own piece in the specified square" do
-        game = FactoryBot.create(:sample_game)
-        white_pawn = FactoryBot.create :sample_white_pawn,
-                        x_position: 3, y_position: 3, game_id: game.id
-        white_pawn2 = FactoryBot.create :sample_white_pawn,
-                        x_position: 4, y_position: 4, game_id: game.id
-        
-        expect(white_pawn.has_enemy_diagonal).to be false
-      end
-
-      it "returns false if there is no piece in the specified square" do
-        game = FactoryBot.create(:sample_game)
-        white_pawn = FactoryBot.create :sample_white_pawn,
-                        x_position: 3, y_position: 3, game_id: game.id
-
-        expect(white_pawn.has_enemy_diagonal).to be false
-      end
-    end
-    context "black piece" do
-       it "says whether a black piece has an enemy white pawn in a diagonal square" do
-        game = FactoryBot.create(:sample_game)
+                       x_position: 3, y_position: 3, game_id: game.id
         white_pawn = FactoryBot.create :sample_white_pawn,
                        x_position: 2, y_position: 2, game_id: game.id
-        black_pawn = FactoryBot.create :sample_black_pawn,
-                       x_position: 3, y_position: 3, game_id: game.id
-        
-        expect(black_pawn.has_enemy_diagonal).to be true
-      end
 
-      it "returns false if it is the player's own piece in the specified square" do
-        game = FactoryBot.create(:sample_game)
-        black_pawn = FactoryBot.create :sample_black_pawn,
-                       x_position: 3, y_position: 3, game_id: game.id
-        black_pawn2 = FactoryBot.create :sample_black_pawn,
-                       x_position: 2, y_position: 2, game_id: game.id
-        
-        expect(black_pawn.has_enemy_diagonal).to be false
+        expect(black_pawn.valid_move?(2,2)).to be true
       end
     end
   end
@@ -153,7 +86,7 @@ RSpec.describe Pawn, type: :model do
 
   describe "#add_enemy_diagonal" do
     context "white piece" do
-      fit "should update valid_moves with a diagonal square occupied by an enemy" do
+      it "should update valid_moves with a diagonal square occupied by an enemy" do
         game = FactoryBot.create(:sample_game)
         white_pawn = FactoryBot.create :sample_white_pawn,
                     x_position: 3, y_position: 3, game_id: game.id
@@ -164,7 +97,7 @@ RSpec.describe Pawn, type: :model do
         expect(white_pawn.valid_moves).to include({ x: 4, y: 4 })
         expect(white_pawn.valid_moves).to include({ x: 2, y: 4 }) 
       end
-      fit "should not update valid_moves with a diagonal square occupied by yourself" do
+      it "should not update valid_moves with a diagonal square occupied by yourself" do
         game = FactoryBot.create(:sample_game)
         white_pawn = FactoryBot.create :sample_white_pawn,
                     x_position: 3, y_position: 3, game_id: game.id
@@ -172,7 +105,7 @@ RSpec.describe Pawn, type: :model do
                     x_position: 4, y_position: 4, game_id: game.id        
         expect(white_pawn.valid_moves).not_to include({ x: 4, y: 4 })
       end
-      fit "should not update valid_moves with an unoccupied diagonal square" do
+      it "should not update valid_moves with an unoccupied diagonal square" do
         game = FactoryBot.create(:sample_game)
         white_pawn = FactoryBot.create :sample_white_pawn,
                     x_position: 3, y_position: 3, game_id: game.id        
@@ -180,7 +113,7 @@ RSpec.describe Pawn, type: :model do
       end
     end
     context "black piece" do
-      fit "should update valid_moves with a diagonal square occupied by a white pawn" do
+      it "should update valid_moves with a diagonal square occupied by a white pawn" do
         game = FactoryBot.create(:sample_game)
         white_pawn = FactoryBot.create :sample_white_pawn,
                        x_position: 2, y_position: 2, game_id: game.id
@@ -191,7 +124,7 @@ RSpec.describe Pawn, type: :model do
         expect(black_pawn.valid_moves).to include({ x: 2, y: 2 })
         expect(black_pawn.valid_moves).to include({ x: 4, y: 2 })
       end
-      fit "should not update valid_moves with a diagonal square occupied by a black pawn" do
+      it "should not update valid_moves with a diagonal square occupied by a black pawn" do
         game = FactoryBot.create(:sample_game)
         black_pawn = FactoryBot.create :sample_black_pawn,
                        x_position: 3, y_position: 3, game_id: game.id
@@ -199,7 +132,7 @@ RSpec.describe Pawn, type: :model do
                        x_position: 2, y_position: 2, game_id: game.id        
         expect(black_pawn.valid_moves).not_to include({ x: 2, y: 2 })
       end      
-      fit "should not update valid_moves with an unoccupied diagonal square" do
+      it "should not update valid_moves with an unoccupied diagonal square" do
         game = FactoryBot.create(:sample_game)
         black_pawn = FactoryBot.create :sample_black_pawn,
                        x_position: 3, y_position: 3, game_id: game.id        
