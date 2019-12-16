@@ -10,7 +10,7 @@ class Piece < ApplicationRecord
   end
 
   def valid_move?(x, y)
-    valid_moves.include?({x: x, y: y})
+    valid_moves.include?({x: x, y: y}) && in_boundary?(x, y)
   end
 
   def is_white_piece?
@@ -26,5 +26,7 @@ class Piece < ApplicationRecord
   end
 
   private
-
+  def in_boundary?(x, y)
+    x <= 7 && x>=0 && y <= 7 && y>=0
+  end
 end

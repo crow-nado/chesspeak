@@ -19,4 +19,14 @@ RSpec.describe Piece, type: :model do
       expect(piece.first_move?).to be false
     end
   end
+
+  describe "#valid_move" do
+    fit "does not allow a piece to move off of the board" do
+      game = FactoryBot.create :sample_game
+      # piece = game.pieces.create(x_position: 0, y_position: 0)
+      white_pawn = FactoryBot.create :sample_white_pawn,
+                  x_position: 7, y_position: 7, game_id: game.id
+      expect(white_pawn.valid_move?(7, 8)).to be false
+    end
+  end
 end
