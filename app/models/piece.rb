@@ -25,6 +25,20 @@ class Piece < ApplicationRecord
     end
   end
 
+  def is_obstructed_vertical?(x, y)
+    range = self.y_position > y ? (y+1..self.y_position-1) : (self.y_position+1..y-1)
+    range.each do |n|
+      return true if !self.game.check_square(x, n).nil?
+    end
+  end
+
+  def is_obstructed_horizontal?(x, y)
+    range = self.x_position > x ? (x+1..self.x_position-1) : (self.x_position+1..x-1)
+    range.each do |n|
+      return true if !self.game.check_square(n, y).nil?
+    end
+  end
+
   private
   def in_boundary?(x, y)
     x <= 7 && x>=0 && y <= 7 && y>=0
