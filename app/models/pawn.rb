@@ -1,5 +1,7 @@
 class Pawn < Piece
   belongs_to :game
+  #alias x x_position
+  #alias y y_position
 
   def image
     return self.image = "&#9817" if self.is_white_piece?
@@ -31,16 +33,34 @@ class Pawn < Piece
   end
 
   def add_enemy_diagonal
+    x,y = self.x_position, self.y_position
     if self.is_white_piece?
-      left = self.game.check_square(self.x_position+1, self.y_position+1)
-      if !left.nil? && left.color != self.color
-        @valid_moves.push({x: left.x_position, y: left.y_position})
-      end
+      check_and_add_square(x-1, y+1)
+      check_and_add_square(x+1, y+1)
+      #left = self.game.check_square(self.x_position-1, self.y_position+1)
+      #if !left.nil? && left.color != self.color
+      #   @valid_moves.push({x: left.x_position, y: left.y_position})
+      # end
+      # right = self.game.check_square(self.x_position+1, self.y_position+1)
+      # if !right.nil? && right.color != self.color
+      #   @valid_moves.push({x: right.x_position, y: right.y_position})
+      # end
     else
       right = self.game.check_square(self.x_position-1, self.y_position-1)
       if !right.nil? && right.color != self.color
         @valid_moves.push({x: right.x_position, y: right.y_position})
       end
     end
+  end
+
+  def check_and_add_square(x,y)
+    square = self.game.check_square(x, y)
+    if is_enemy(square)
+      @valid_moves.push({x: x, y: y})
+    end
+  end
+
+  def is_enemy(piece)
+    !piece.nil? && piece.color != self.color
   end
 end
