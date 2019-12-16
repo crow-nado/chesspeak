@@ -12,11 +12,11 @@ class Pawn < Piece
     @valid_moves = []
     add_enemy_diagonal
     if self.is_white_piece?
-      @valid_moves.push({x: x, y: y+1})
-      @valid_moves.push({x: x, y: y+2}) if self.first_move?
+      @valid_moves.push({x: x, y: y+1}) unless square_occupied?(x, y+1)
+      @valid_moves.push({x: x, y: y+2}) if self.first_move? && !is_obstructed_vertical?(x, y+2)
     else
-      @valid_moves.push({x: x, y: y-1})
-      @valid_moves.push({x: x, y: y-2}) if self.first_move?
+      @valid_moves.push({x: x, y: y-1}) unless square_occupied?(x, y-1)
+      @valid_moves.push({x: x, y: y-2}) if self.first_move? && !is_obstructed_vertical?(x, y-2)
     end
     @valid_moves
   end

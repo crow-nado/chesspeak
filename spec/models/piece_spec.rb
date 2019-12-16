@@ -62,4 +62,13 @@ RSpec.describe Piece, type: :model do
       expect(piece1.is_obstructed_horizontal?(0,2)).to be true
     end
   end
+
+  describe "#is_obstructed_diagonal?" do
+    it "tells whether there is another piece between the origin and destination" do
+      game = FactoryBot.create :sample_game
+      piece1 = game.pieces.create(x_position: 2, y_position: 2)
+      piece2 = game.pieces.create(x_position: 3, y_position: 3)
+      expect(piece1.is_obstructed_diagonal?(4,4)).to be true
+    end
+  end
 end

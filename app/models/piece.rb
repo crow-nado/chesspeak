@@ -26,21 +26,46 @@ class Piece < ApplicationRecord
   end
 
   def is_obstructed_vertical?(x, y)
-    range = self.y_position > y ? (y+1..self.y_position-1) : (self.y_position+1..y-1)
+    range = y_range(y)
     range.each do |n|
-      return true if !self.game.check_square(x, n).nil?
+      return true if square_occupied?(x, n)
     end
+    return false
   end
 
   def is_obstructed_horizontal?(x, y)
-    range = self.x_position > x ? (x+1..self.x_position-1) : (self.x_position+1..x-1)
+    range = x_range(x)
     range.each do |n|
-      return true if !self.game.check_square(n, y).nil?
+      return true if square_occupied?(n, y)
     end
+    return false
+  end
+
+  def is_obstructed_diagonal?(x, y)
+    x_axis = x_range(x)
+    y_axis = y_range(y)
+    combined_range = x_axis.zip(y_axis)
+
+    combined_range.each do |pair|
+      return true if square_occupied?(pair[0], pair[1])
+    end
+
   end
 
   private
   def in_boundary?(x, y)
     x <= 7 && x>=0 && y <= 7 && y>=0
+  end
+
+  def x_range(x)
+    self.x_position > x ? (x+1..self.x_position-1) : (self.x_position+1..x-1)
+  end
+
+  def y_range(y)
+    self.y_position > y ? (y+1..self.y_position-1) : (self.y_position+1..y-1)
+  end
+
+  def square_occupied?(x, y)
+    !self.game.check_square(x, y).nil?
   end
 end
