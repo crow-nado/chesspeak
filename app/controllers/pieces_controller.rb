@@ -17,7 +17,7 @@ class PiecesController < ApplicationController
     if piece.valid_move?(new_x, new_y)
       piece.update_attributes(piece_params)
       piece.update_attribute(:updated_at, Time.now)
-      render json: piece
+      head 200
     else
       #Else condition to handle response for invalid_moves
     end
