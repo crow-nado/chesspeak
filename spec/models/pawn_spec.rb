@@ -160,5 +160,19 @@ RSpec.describe Pawn, type: :model do
                   x_position: 4, y_position: 4, game_id: game.id 
       expect(white_pawn.valid_moves).to include({ x: 4, y: 4 })
     end
+    fit "should not update valid_moves with a diagonal square occupied by yourself" do
+      game = FactoryBot.create(:sample_game)
+      white_pawn = FactoryBot.create :sample_white_pawn,
+                  x_position: 3, y_position: 3, game_id: game.id
+      white_pawn2 = FactoryBot.create :sample_white_pawn,
+                  x_position: 4, y_position: 4, game_id: game.id        
+      expect(white_pawn.valid_moves).not_to include({ x: 4, y: 4 })
+    end
+    fit "should not update valid_moves with an unoccupied diagonal square" do
+      game = FactoryBot.create(:sample_game)
+      white_pawn = FactoryBot.create :sample_white_pawn,
+                  x_position: 3, y_position: 3, game_id: game.id        
+      expect(white_pawn.valid_moves).not_to include({ x: 4, y: 4 })
+    end
   end
 end
