@@ -37,19 +37,9 @@ class Pawn < Piece
     if self.is_white_piece?
       check_and_add_square(x-1, y+1)
       check_and_add_square(x+1, y+1)
-      #left = self.game.check_square(self.x_position-1, self.y_position+1)
-      #if !left.nil? && left.color != self.color
-      #   @valid_moves.push({x: left.x_position, y: left.y_position})
-      # end
-      # right = self.game.check_square(self.x_position+1, self.y_position+1)
-      # if !right.nil? && right.color != self.color
-      #   @valid_moves.push({x: right.x_position, y: right.y_position})
-      # end
     else
-      right = self.game.check_square(self.x_position-1, self.y_position-1)
-      if !right.nil? && right.color != self.color
-        @valid_moves.push({x: right.x_position, y: right.y_position})
-      end
+      check_and_add_square(x-1, y-1)
+      check_and_add_square(x+1, y-1)
     end
   end
 
