@@ -21,7 +21,7 @@ RSpec.describe Piece, type: :model do
   end
 
   describe "#valid_move" do
-    fit "does not allow a piece to move off of the board" do
+    it "does not allow a piece to move off of the board" do
       game = FactoryBot.create :sample_game
       # piece = game.pieces.create(x_position: 0, y_position: 0)
       white_pawn = FactoryBot.create :sample_white_pawn,

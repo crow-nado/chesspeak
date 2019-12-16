@@ -44,6 +44,14 @@ RSpec.describe Pawn, type: :model do
                         x_position: 4, y_position: 4, game_id: game.id
         expect(white_pawn.valid_move?(black_pawn.x_position, black_pawn.y_position)).to be true
       end
+
+      it "cannot move off of the edge" do
+        game = FactoryBot.create(:sample_game)
+        white_pawn = FactoryBot.create :sample_white_pawn,
+                      x_position: 7, y_position: 7, game_id: game.id
+
+        expect(white_pawn.valid_move?(7,8)).to be false
+      end
     end
     context "black piece" do
       it "can move forward" do
@@ -79,6 +87,13 @@ RSpec.describe Pawn, type: :model do
                        x_position: 2, y_position: 2, game_id: game.id
 
         expect(black_pawn.valid_move?(2,2)).to be true
+      end
+      it "cannot move off of the edge" do
+        game = FactoryBot.create(:sample_game)
+        black_pawn = FactoryBot.create :sample_black_pawn,
+                      x_position: 0, y_position: 0, game_id: game.id
+
+        expect(black_pawn.valid_move?(0, -1)).to be false
       end
     end
   end
