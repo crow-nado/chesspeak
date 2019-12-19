@@ -38,7 +38,5 @@ class Pawn < Piece
     end
   end
 
-  def is_enemy(piece)
-    !piece.nil? && piece.color != self.color
-  end
+
 end

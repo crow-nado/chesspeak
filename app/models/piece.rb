@@ -68,4 +68,13 @@ class Piece < ApplicationRecord
   def square_occupied?(x, y)
     !self.game.check_square(x, y).nil?
   end
+
+  def is_enemy(piece)
+    !piece.nil? && piece.color != self.color
+  end
+
+  def is_friendly(piece)
+    !piece.nil? && piece.color == self.color
+  end
+  
 end

@@ -40,4 +40,20 @@ FactoryBot.define do
       y_position { 7 }
     end
   end
+
+  factory :king do
+    association :game, factory: :game
+
+    factory :sample_white_king do
+      color { "white" }
+      x_position { 3 }
+      y_position { 0 }
+    end
+
+    factory :sample_black_king do
+      color { "black" }
+      x_position { 3 }
+      y_position { 7 }
+    end
+  end
 end
