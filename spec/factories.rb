@@ -56,4 +56,20 @@ FactoryBot.define do
       y_position { 7 }
     end
   end
+
+  factory :rook do
+    association :game, factory: :game
+
+    factory :sample_white_rook do
+      color { "white" }
+      x_position { 0 }
+      y_position { 0 }
+    end
+
+    factory :sample_black_rook do
+      color { "black" }
+      x_position { 7 }
+      y_position { 7 }
+    end
+  end
 end

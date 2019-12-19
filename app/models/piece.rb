@@ -3,6 +3,8 @@ class Piece < ApplicationRecord
   self.inheritance_column = 'piece_type'
   belongs_to :game
   attr_accessor :image
+  alias_attribute :x, :x_position
+  alias_attribute :y, :y_position
 
   def as_json(options={})
     super(only: [:id, :x_position, :y_position, :player_id, :piece_type, :image, :color],
