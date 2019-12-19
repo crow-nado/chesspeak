@@ -52,5 +52,15 @@ RSpec.describe King, type: :model do
 
       expect(king.valid_move?(2,2)).to be false
     end
+
+    it "can capture an enemy piece" do
+      game = Game.create()
+      king = FactoryBot.create :sample_white_king,
+             x_position: 3, y_position: 3, game_id: game.id
+      pawn = FactoryBot.create :sample_black_pawn,
+             x_position: 4, y_position: 4, game_id: game.id
+
+      expect(king.valid_move?(4,4)).to be true
+    end
   end
 end
