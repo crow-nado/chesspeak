@@ -72,12 +72,20 @@ document.addEventListener("DOMContentLoaded", function(){
         }
       }
       submitPieceUpdate(activePiece.dataset.pieceId, piecePayload)
-        .then(() => updatePieceLocation())
+        .then(response => checkMove(response))
         .then(() => clearSelections())
         .catch(error => console.log(error));
     } else {
       clearSelections();
     }
+  }
+
+  function checkMove(response) {
+    if (response === 200) {
+      updatePieceLocation();
+    } else {
+      alert("That is not a valid move");
+    }    
   }
 
   function updatePieceLocation() {
