@@ -8,10 +8,10 @@ class Rook < Piece
 
   def valid_moves
     @valid_moves = []
-    add_valid_forward_path
-    add_valid_backward_path
-    add_valid_right_path
-    add_valid_left_path
+    check_squares_on_path(1,0)
+    check_squares_on_path(-1,0)
+    check_squares_on_path(0,1)
+    check_squares_on_path(0,-1)
     @valid_moves
   end
 

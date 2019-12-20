@@ -8,10 +8,10 @@ class Bishop < Piece
 
   def valid_moves
     @valid_moves = []
-    add_valid_forward_right_path
-    add_valid_forward_left_path
-    add_valid_backward_left_path
-    add_valid_backward_right_path
+    check_squares_on_path(1,1)
+    check_squares_on_path(-1,1)
+    check_squares_on_path(1,-1)
+    check_squares_on_path(-1,-1)
     @valid_moves
   end
 
