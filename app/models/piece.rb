@@ -47,7 +47,98 @@ class Piece < ApplicationRecord
     combined_range.each do |pair|
       return true if square_occupied?(pair[0], pair[1])
     end
+  end
 
+  def add_valid_forward_path
+    row = self.y + 1
+    until row > 7
+      piece = self.game.check_square(self.x, row)
+      break if is_friendly(piece)
+      @valid_moves.push({x: self.x, y: row})
+      break if is_enemy(piece)
+      row += 1
+    end
+  end
+
+  def add_valid_backward_path
+    row = self.y - 1
+    until row < 0
+      piece = self.game.check_square(self.x, row)
+      break if is_friendly(piece)
+      @valid_moves.push({x: self.x, y: row})
+      break if is_enemy(piece)
+      row -= 1
+    end
+  end
+
+  def add_valid_right_path
+    column = self.y + 1
+    until column > 7
+      piece = self.game.check_square(column, self.y)
+      break if is_friendly(piece)
+      @valid_moves.push({x: column, y: self.y})
+      break if is_enemy(piece)
+      column += 1
+    end
+  end
+
+  def add_valid_left_path
+    column = self.y - 1
+    until column < 0
+      piece = self.game.check_square(column, self.y)
+      break if is_friendly(piece)
+      @valid_moves.push({x: column, y: self.y})
+      break if is_enemy(piece)
+      column -= 1
+    end
+  end
+
+  def add_valid_forward_right_path
+    row, column = self.y+1, self.x+1
+    until row > 7 || column > 7
+      piece = self.game.check_square(column, row)
+      break if is_friendly(piece)
+      @valid_moves.push({x: column, y: row})
+      break if is_enemy(piece)
+      row += 1
+      column += 1
+    end
+  end
+
+  def add_valid_backward_right_path
+    row, column = self.y-1, self.x+1
+    until row < 0 || column > 7
+      piece = self.game.check_square(column, row)
+      break if is_friendly(piece)
+      @valid_moves.push({x: column, y: row})
+      break if is_enemy(piece)
+      row -= 1
+      column += 1
+    end
+  end
+
+  def add_valid_backward_left_path
+    row, column = self.y-1, self.x-1
+    until row < 0 || column < 0
+      piece = self.game.check_square(column, row)
+      break if is_friendly(piece)
+      @valid_moves.push({x: column, y: row})
+      break if is_enemy(piece)
+      row -= 1
+      column -= 1
+    end
+  end
+
+  def add_valid_forward_left_path
+    row, column = self.y+1, self.x-1
+    until !in_boundary?(column, row)
+      piece = self.game.check_square(column, row)
+      break if is_friendly(piece)
+      @valid_moves.push({x: column, y: row})
+      break if is_enemy(piece)
+      row += 1
+      column -= 1
+    end
   end
 
   private
@@ -73,6 +164,19 @@ class Piece < ApplicationRecord
 
   def is_friendly(piece)
     !piece.nil? && piece.color == self.color
+  end
+
+  def check_squares_on_path(x_direction, y_direction)
+    x_path = self.x + x_direction
+    y_path = self.y + y_direction
+    until !in_boundary?(x_path, y_path)
+      piece = self.game.check_square(x_path, y_path)
+      break if is_friendly(piece)
+      @valid_moves.push(x: x_path, y: y_path)
+      break if is_enemy(piece)
+      x_path += x_direction
+      y_path += y_direction
+    end
   end
   
 end
