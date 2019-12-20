@@ -72,4 +72,20 @@ FactoryBot.define do
       y_position { 7 }
     end
   end
+
+  factory :bishop do
+    association :game, factory: :game
+
+    factory :sample_white_bishop do
+      color { "white" }
+      x_position { 1 }
+      y_position { 0 }
+    end
+
+    factory :sample_black_bishop do
+      color { "black" }
+      x_position { 7 }
+      y_position { 6 }
+    end
+  end
 end

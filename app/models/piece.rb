@@ -20,11 +20,7 @@ class Piece < ApplicationRecord
   end
 
   def first_move?
-    if created_at == updated_at
-      return true
-    else
-      return false
-    end
+    created_at == updated_at
   end
 
   def is_obstructed_vertical?(x, y)
