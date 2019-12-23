@@ -31,30 +31,6 @@ document.addEventListener("DOMContentLoaded", function(){
     }
   }
 
-  //Review Destination Square - Now with 'checkMove' we may want to rename this (checkColor?) Do we still need it?
-  function checkDestinationSquare(square) {
-    if (square.dataset.color) {
-      if (activePlayer == square.dataset.color) {
-        alert("You can't capture your own piece!");
-        return false;
-      } else {
-        deletePiece(square.dataset.pieceId);
-      }
-    }
-    return true;
-  }
-
-  function deletePiece(pieceID) {
-    let gameID = "<%= @game.id %>";
-    return fetch("/games/" + gameID + "/pieces/" + pieceID, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({id: pieceID}),
-    });
-  }
-
   function clearSelections() {
     activePiece.classList.remove("initial");
     document.querySelector(".destination").classList.remove("destination");
@@ -64,20 +40,16 @@ document.addEventListener("DOMContentLoaded", function(){
   }
 
   function submitMove() {
-    if (checkDestinationSquare(destinationSquare)) {
-      let [newX, newY] = [destinationSquare.dataset.x, destinationSquare.dataset.y]
-      let piecePayload = {piece: {
-        x_position: newX,
-        y_position: newY,
-        }
+    let [newX, newY] = [destinationSquare.dataset.x, destinationSquare.dataset.y]
+    let piecePayload = {piece: {
+      x_position: newX,
+      y_position: newY,
       }
-      submitPieceUpdate(activePiece.dataset.pieceId, piecePayload)
-        .then(response => checkMove(response))
-        .then(() => clearSelections())
-        .catch(error => console.log(error));
-    } else {
-      clearSelections();
     }
+    submitPieceUpdate(activePiece.dataset.pieceId, piecePayload)
+      .then(response => checkMove(response))
+      .then(() => clearSelections())
+      .catch(error => console.log(error));
   }
 
   function checkMove(response) {
