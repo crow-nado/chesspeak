@@ -48,9 +48,9 @@ RSpec.describe Pawn, type: :model do
       it "cannot move off of the edge" do
         game = FactoryBot.create(:sample_game)
         white_pawn = FactoryBot.create :sample_white_pawn,
-                      x_position: 7, y_position: 7, game_id: game.id
+                      x_position: 8, y_position: 8, game_id: game.id
 
-        expect(white_pawn.valid_move?(7,8)).to be false
+        expect(white_pawn.valid_move?(8,9)).to be false
       end
       it "won't move through other pieces" do
         game = FactoryBot.create(:sample_game)

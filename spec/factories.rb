@@ -47,13 +47,13 @@ FactoryBot.define do
     factory :sample_white_king do
       color { "white" }
       x_position { 3 }
-      y_position { 0 }
+      y_position { 1 }
     end
 
     factory :sample_black_king do
       color { "black" }
       x_position { 3 }
-      y_position { 7 }
+      y_position { 8 }
     end
   end
 
@@ -62,14 +62,14 @@ FactoryBot.define do
 
     factory :sample_white_rook do
       color { "white" }
-      x_position { 0 }
-      y_position { 0 }
+      x_position { 1 }
+      y_position { 1 }
     end
 
     factory :sample_black_rook do
       color { "black" }
-      x_position { 7 }
-      y_position { 7 }
+      x_position { 8 }
+      y_position { 8 }
     end
   end
 
@@ -79,13 +79,13 @@ FactoryBot.define do
     factory :sample_white_bishop do
       color { "white" }
       x_position { 1 }
-      y_position { 0 }
+      y_position { 1 }
     end
 
     factory :sample_black_bishop do
       color { "black" }
       x_position { 6 }
-      y_position { 7 }
+      y_position { 8 }
     end
   end
 
@@ -95,13 +95,13 @@ FactoryBot.define do
     factory :sample_white_queen do
       color { "white" }
       x_position { 4 }
-      y_position { 0 }
+      y_position { 1 }
     end
 
     factory :sample_black_queen do
       color { "black" }
       x_position { 4 }
-      y_position { 7 }
+      y_position { 8 }
     end
   end
 end
