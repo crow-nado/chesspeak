@@ -16,7 +16,7 @@ RSpec.describe Bishop, type: :model do
       bishop = FactoryBot.create :sample_white_bishop,
                x_position: 3, y_position: 3
 
-      3.times do |n|
+      2.times do |n|
         expect(bishop.valid_move?(4+n, 4+n)).to be true
         expect(bishop.valid_move?(4+n, 2-n)).to be true
         expect(bishop.valid_move?(2-n, 4+n)).to be true
