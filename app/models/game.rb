@@ -7,8 +7,23 @@ class Game < ApplicationRecord
   has_many :queens
   has_many :pieces
   scope :available, -> { where(black_player_id: nil) }
+  attr_accessor :turn_counter
 
-  # Remember whose turn it is here
+  def start
+    @turn_counter = 1
+  end
+
+  def change_player_turn
+    @turn_counter += 1
+  end
+
+  def active_turn_player
+    if @turn_counter % 2 == 1
+      User.find(white_player_id)
+    else
+      User.find(black_player_id)
+    end
+  end
 
   def populate_white_side
     populate_white_pawns
