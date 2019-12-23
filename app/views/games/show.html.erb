@@ -2,8 +2,12 @@
 document.addEventListener("DOMContentLoaded", function(){
   let activePiece;
   let destinationSquare;
-  let activePlayer = "white";
-  let inactivePlayer = "black";
+  let activePlayer = ( setActivePlayer = () => {
+    if (localStorage.getItem('ActivePlayer') == null) {
+      localStorage.setItem('ActivePlayer', 'white');
+    }
+    return localStorage.getItem('ActivePlayer');
+  })();
 
   let fetchBoard = fetch("<%= game_pieces_path(@game) %>");
 
@@ -89,9 +93,17 @@ document.addEventListener("DOMContentLoaded", function(){
     initialSquare.removeAttribute("data-piece-id");
     initialSquare.removeEventListener("click", updateActivePiece);
 
-    [activePlayer, inactivePlayer] = [inactivePlayer, activePlayer];
+    change_turns();
   }
 
+  function change_turns() {
+    if (localStorage.getItem('ActivePlayer') == 'white') {
+      localStorage.setItem('ActivePlayer', 'black');
+    } else {
+      localStorage.setItem('ActivePlayer', 'white');
+    }
+    activePlayer = setActivePlayer();
+  }
 
   
 
