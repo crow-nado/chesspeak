@@ -29,12 +29,12 @@ RSpec.describe PiecesController, type: :controller do
     it "cannot update a piece off the game board" do
       game = FactoryBot.create(:sample_game)
       white_pawn = FactoryBot.create :sample_white_pawn,
-                  x_position: 7, y_position: 7, game_id: game.id
+                   x_position: 8, y_position: 8, game_id: game.id
 
-      patch :update, params: { game_id: game.id, id: white_pawn.id, use_route: game_piece_path(game, white_pawn), piece: { x_position: 7, y_position: 8 } }
+      patch :update, params: { game_id: game.id, id: white_pawn.id, use_route: game_piece_path(game, white_pawn), piece: { x_position: 8, y_position: 9 } }
 
       white_pawn.reload
-      expect(white_pawn.y_position).to eq(7)
+      expect(white_pawn.y_position).to eq(8)
     end
   end
 end
