@@ -5,10 +5,8 @@ document.addEventListener("DOMContentLoaded", function(){
   let activePlayer = "white";
   let inactivePlayer = "black";
 
-  //Setup Promise to Grab board
   let fetchBoard = fetch("<%= game_pieces_path(@game) %>");
 
-  //Function to populate initial board
   function renderInitialBoard (json) {
     console.log(json);
     json.forEach( piece => {
@@ -23,7 +21,6 @@ document.addEventListener("DOMContentLoaded", function(){
     });
   };
 
-  //Add clicked to latest selection
   function updateActivePiece() {
     if (!activePiece && event.target.dataset.color == activePlayer) {
       activePiece = event.target;
@@ -31,13 +28,14 @@ document.addEventListener("DOMContentLoaded", function(){
     }
   }
 
-  function clearSelections() {
-    activePiece.classList.remove("initial");
-    document.querySelector(".destination").classList.remove("destination");
-    activePiece = null;
-    destinationSquare = null;
-    document.querySelector(".clear-submit").classList.add("hidden");
-  }
+  fetchBoard
+    .then(response => response.json())
+    .then (json => renderInitialBoard(json))
+    .catch(error => console.log(error));
+
+
+
+
 
   function submitMove() {
     let [newX, newY] = [destinationSquare.dataset.x, destinationSquare.dataset.y]
@@ -52,12 +50,31 @@ document.addEventListener("DOMContentLoaded", function(){
       .catch(error => console.log(error));
   }
 
+  function submitPieceUpdate(pieceID, data) {
+    let gameID = "<%= @game.id %>";
+    return fetch("/games/" + gameID + "/pieces/" + pieceID, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data),
+    });
+  }
+
   function checkMove(response) {
     if (response.status === 200) {
       updatePieceLocation();
     } else {
       alert("That is not a valid move");
     }    
+  }
+
+  function clearSelections() {
+    activePiece.classList.remove("initial");
+    document.querySelector(".destination").classList.remove("destination");
+    activePiece = null;
+    destinationSquare = null;
+    document.querySelector(".clear-submit").classList.add("hidden");
   }
 
   function updatePieceLocation() {
@@ -75,22 +92,10 @@ document.addEventListener("DOMContentLoaded", function(){
     [activePlayer, inactivePlayer] = [inactivePlayer, activePlayer];
   }
 
-  function submitPieceUpdate(pieceID, data) {
-    let gameID = "<%= @game.id %>";
-    return fetch("/games/" + gameID + "/pieces/" + pieceID, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(data),
-    });
-  }
+
   
 
-  fetchBoard
-    .then(response => response.json())
-    .then (json => renderInitialBoard(json))
-    .catch(error => console.log(error));
+
 
   // Maybe attach different event handlers depending on the piece type (instead of for each empty div)
   document.querySelectorAll('.box').forEach( box => {
@@ -105,8 +110,12 @@ document.addEventListener("DOMContentLoaded", function(){
       }
     });
   });
+
+
   document.querySelector(".wipe").addEventListener("click", clearSelections)
   document.querySelector(".submit").addEventListener("click", submitMove)
+
+
 });
 </script>
 <br />
