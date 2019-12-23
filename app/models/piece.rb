@@ -11,12 +11,21 @@ class Piece < ApplicationRecord
           methods: [:image])
   end
 
-  def valid_move?(x, y)
-    valid_moves.include?({x: x, y: y}) && in_boundary?(x, y)
-  end
-
   def is_white_piece?
     color == "white"
+  end
+
+  def image
+    piece = self.piece_type.downcase
+    if self.is_white_piece?
+      self.image = IconLibrary.white_pieces[piece.to_sym]
+    else
+      self.image = IconLibrary.black_pieces[piece.to_sym]
+    end
+  end
+
+  def valid_move?(x, y)
+    valid_moves.include?({x: x, y: y}) && in_boundary?(x, y)
   end
 
   def first_move?

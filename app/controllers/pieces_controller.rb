@@ -23,7 +23,7 @@ class PiecesController < ApplicationController
     end
   end
 
-  def destroy
+  def destroy # move logic into update
     captured_piece = Piece.find(params[:id])
     captured_piece.update_attributes(x_position: nil, y_position: nil)
     head 200

@@ -8,6 +8,8 @@ class Game < ApplicationRecord
   has_many :pieces
   scope :available, -> { where(black_player_id: nil) }
 
+  # Remember whose turn it is here
+
   def populate_white_side
     populate_white_pawns
     populate_white_rooks
