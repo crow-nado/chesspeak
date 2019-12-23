@@ -89,6 +89,22 @@ FactoryBot.define do
     end
   end
 
+  factory :knight do
+    association :game, factory: :game
+
+    factory :sample_white_knight do
+      color { "white" }
+      x_position { 3 }
+      y_position { 1 }
+    end
+
+    factory :sample_black_knight do
+      color { "black" }
+      x_position { 6 }
+      y_position { 8 }
+    end
+  end
+
   factory :queen do
     association :game, factory: :game
 
