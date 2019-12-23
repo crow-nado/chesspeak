@@ -60,7 +60,7 @@ class Piece < ApplicationRecord
 
   private
   def in_boundary?(x, y)
-    x <= 7 && x>=0 && y <= 7 && y>=0
+    x <= 8 && x >= 1 && y <= 8 && y >= 1
   end
 
   def x_range(x)

@@ -11,9 +11,10 @@ class PiecesController < ApplicationController
   end
 
   def update
+    game = Game.find(params[:game_id])
     new_x = piece_params[:x_position].to_i
     new_y = piece_params[:y_position].to_i
-    captured_piece = Piece.find_by(x_position: new_x, y_position: new_y)
+    captured_piece = game.pieces.find_by(x_position: new_x, y_position: new_y)
     piece = Piece.find(params[:id])
     if piece.valid_move?(new_x, new_y)
       captured_piece.update_attributes(x_position: nil, y_position: nil) unless captured_piece.nil?
