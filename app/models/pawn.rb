@@ -1,7 +1,5 @@
 class Pawn < Piece
   belongs_to :game
-  alias_attribute :x, :x_position
-  alias_attribute :y, :y_position
 
   def image
     return self.image = "&#9817" if self.is_white_piece?
@@ -38,7 +36,5 @@ class Pawn < Piece
     end
   end
 
-  def is_enemy(piece)
-    !piece.nil? && piece.color != self.color
-  end
+
 end

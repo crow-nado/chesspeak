@@ -31,7 +31,7 @@ document.addEventListener("DOMContentLoaded", function(){
     }
   }
 
-  //Review Destination Square
+  //Review Destination Square - Now with 'checkMove' we may want to rename this (checkColor?)
   function checkDestinationSquare(square) {
     if (square.dataset.color) {
       if (activePlayer == square.dataset.color) {
@@ -72,12 +72,20 @@ document.addEventListener("DOMContentLoaded", function(){
         }
       }
       submitPieceUpdate(activePiece.dataset.pieceId, piecePayload)
-        .then(() => updatePieceLocation())
+        .then(response => checkMove(response))
         .then(() => clearSelections())
         .catch(error => console.log(error));
     } else {
       clearSelections();
     }
+  }
+
+  function checkMove(response) {
+    if (response.status === 200) {
+      updatePieceLocation();
+    } else {
+      alert("That is not a valid move");
+    }    
   }
 
   function updatePieceLocation() {

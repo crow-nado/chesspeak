@@ -3,6 +3,8 @@ class Piece < ApplicationRecord
   self.inheritance_column = 'piece_type'
   belongs_to :game
   attr_accessor :image
+  alias_attribute :x, :x_position
+  alias_attribute :y, :y_position
 
   def as_json(options={})
     super(only: [:id, :x_position, :y_position, :player_id, :piece_type, :image, :color],
@@ -18,11 +20,7 @@ class Piece < ApplicationRecord
   end
 
   def first_move?
-    if created_at == updated_at
-      return true
-    else
-      return false
-    end
+    created_at == updated_at
   end
 
   def is_obstructed_vertical?(x, y)
@@ -49,7 +47,6 @@ class Piece < ApplicationRecord
     combined_range.each do |pair|
       return true if square_occupied?(pair[0], pair[1])
     end
-
   end
 
   private
@@ -68,4 +65,26 @@ class Piece < ApplicationRecord
   def square_occupied?(x, y)
     !self.game.check_square(x, y).nil?
   end
+
+  def is_enemy(piece)
+    !piece.nil? && piece.color != self.color
+  end
+
+  def is_friendly(piece)
+    !piece.nil? && piece.color == self.color
+  end
+
+  def check_squares_on_path(x_direction, y_direction)
+    x_path = self.x + x_direction
+    y_path = self.y + y_direction
+    until !in_boundary?(x_path, y_path)
+      piece = self.game.check_square(x_path, y_path)
+      break if is_friendly(piece)
+      @valid_moves.push(x: x_path, y: y_path)
+      break if is_enemy(piece)
+      x_path += x_direction
+      y_path += y_direction
+    end
+  end
+  
 end

@@ -19,7 +19,7 @@ class PiecesController < ApplicationController
       piece.update_attribute(:updated_at, Time.now)
       head 200
     else
-      #Else condition to handle response for invalid_moves
+      head 400
     end
   end
 
