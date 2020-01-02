@@ -27,7 +27,7 @@ class GamesController < ApplicationController
     if game.white_player_id != current_user.id
       game.update(black_player_id: current_user.id)
       game.populate_black_side
-      game.state = "In Progress"
+      game.update_attribute(:state, "In Progress")
     end
     redirect_to game_path(game)
   end
