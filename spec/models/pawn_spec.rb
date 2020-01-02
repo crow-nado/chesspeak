@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Pawn, type: :model do
   describe "#image" do
-    it "sets the pawns image in unicode according to its row" do
+    it "sets the pawns image" do
       game = Game.create()
       game.populate_white_pawns
       expect(game.pawns.find_by(y_position: 2).image).to eq "&#9817"
@@ -48,9 +48,9 @@ RSpec.describe Pawn, type: :model do
       it "cannot move off of the edge" do
         game = FactoryBot.create(:sample_game)
         white_pawn = FactoryBot.create :sample_white_pawn,
-                      x_position: 7, y_position: 7, game_id: game.id
+                      x_position: 8, y_position: 8, game_id: game.id
 
-        expect(white_pawn.valid_move?(7,8)).to be false
+        expect(white_pawn.valid_move?(8,9)).to be false
       end
       it "won't move through other pieces" do
         game = FactoryBot.create(:sample_game)

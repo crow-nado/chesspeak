@@ -1,11 +1,6 @@
 class Pawn < Piece
   belongs_to :game
 
-  def image
-    return self.image = "&#9817" if self.is_white_piece?
-    self.image = "&#9823"
-  end
-
   def valid_moves
     @valid_moves = []
     add_enemy_diagonal

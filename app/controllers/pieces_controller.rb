@@ -11,22 +11,19 @@ class PiecesController < ApplicationController
   end
 
   def update
-    piece = Piece.find(params[:id])
+    game = Game.find(params[:game_id])
     new_x = piece_params[:x_position].to_i
     new_y = piece_params[:y_position].to_i
+    captured_piece = game.pieces.find_by(x_position: new_x, y_position: new_y)
+    piece = Piece.find(params[:id])
     if piece.valid_move?(new_x, new_y)
+      captured_piece.update_attributes(x_position: nil, y_position: nil) unless captured_piece.nil?
       piece.update_attributes(piece_params)
       piece.update_attribute(:updated_at, Time.now)
       head 200
     else
       head 400
     end
-  end
-
-  def destroy
-    captured_piece = Piece.find(params[:id])
-    captured_piece.update_attributes(x_position: nil, y_position: nil)
-    head 200
   end
 
 private

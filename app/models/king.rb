@@ -1,12 +1,5 @@
 class King < Piece
   belongs_to :game
-  alias_attribute :x, :x_position
-  alias_attribute :y, :y_position
-
-  def image
-    return self.image = "&#9813" if self.is_white_piece?
-    self.image = "&#9819"
-  end
 
   def valid_moves
     @valid_moves = []

@@ -27,10 +27,8 @@ class GamesController < ApplicationController
     if game.white_player_id != current_user.id
       game.update(black_player_id: current_user.id)
       game.populate_black_side
-      redirect_to game_path(game)
-    else
-      render plain: "You are already in this game", status: :unauthorized
     end
+    redirect_to game_path(game)
   end
 
 private
