@@ -1,21 +1,17 @@
 class BoardState
   def initialize(game)
     @game = game
-    @white_king = @game.kings.find_by(color: "white")
-    @black_king = @game.kings.find_by(color: "black")
     @state = "in progress"
   end
 
-  def in_check?
-    @pieces = @game.pieces.all
-    @pieces.each do |piece|
-      if piece.is_enemy(@black_king)
-        if piece.valid_move?(@black_king.x_position, @black_king.y_position)
-          @state = "check" 
-          break
-        end
+  def in_check?(king)
+    pieces = @game.pieces.where.not(color: king.color)
+    pieces.each do |piece|
+      if piece.valid_move?(king.x_position, king.y_position)
+        @state = "check" 
+        break
       end
     end
-    @state = "check"? true : false
+    @state == "check"? true : false
   end
 end

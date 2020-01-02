@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe BoardState, type: :model do
-  fdescribe "check scenarios" do
+  describe "check scenarios" do
     let!(:user1){FactoryBot.create(:user)}
     let!(:user2){FactoryBot.create(:user)}
 
@@ -12,9 +12,11 @@ RSpec.describe BoardState, type: :model do
       white_rook = game.rooks.create(x_position: 2, y_position: 2, game_id: game.id, color: "white")
       board_state = BoardState.new(game)
 
+      expect(board_state.in_check?(black_king)).to be false
+
       white_rook.update_attributes(y_position: 7)
 
-      expect(board_state.in_check?).to be true
+      expect(board_state.in_check?(black_king)).to be true
     end
   end
 end
