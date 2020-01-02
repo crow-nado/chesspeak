@@ -19,19 +19,6 @@ RSpec.describe Game, type: :model do
     end
   end
 
-  describe "#change_player_turn" do
-    it "checks to see whether or not it's the white player's turn" do
-      white_player = FactoryBot.create :user
-      black_player = FactoryBot.create :user
-      game = FactoryBot.create :sample_game, white_player_id: white_player.id,
-             black_player_id: black_player.id
-      game.start
-      expect(game.active_turn_player.id).to be game.white_player_id
-      game.change_player_turn
-      expect(game.active_turn_player.id).to be game.black_player_id
-    end
-  end
-
   describe "#available" do
     it "checks all games and filters out the unavailable ones" do
       game1 = Game.create()
