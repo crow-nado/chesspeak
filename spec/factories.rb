@@ -22,6 +22,19 @@ FactoryBot.define do
           pieces_count { 32 }
         end
       end
+
+      factory :black_check_in_one_move do
+        factory :black_king do
+          color { "black" }
+          x_position { 3 }
+          y_position { 8 }
+        end
+        factory :white_rook do
+          color { "white" }
+          x_position { 1 }
+          y_position { 1 }
+        end
+      end
     end
   end
 

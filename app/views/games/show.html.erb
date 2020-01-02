@@ -37,10 +37,6 @@ document.addEventListener("DOMContentLoaded", function(){
     .then (json => renderInitialBoard(json))
     .catch(error => console.log(error));
 
-
-
-
-
   function submitMove() {
     let [newX, newY] = [destinationSquare.dataset.x, destinationSquare.dataset.y]
     let piecePayload = {piece: {
@@ -105,10 +101,6 @@ document.addEventListener("DOMContentLoaded", function(){
     activePlayer = setActivePlayer();
   }
 
-  
-
-
-
   // Maybe attach different event handlers depending on the piece type (instead of for each empty div)
   document.querySelectorAll('.box').forEach( box => {
     box.addEventListener("click", function(event) {
@@ -123,10 +115,8 @@ document.addEventListener("DOMContentLoaded", function(){
     });
   });
 
-
   document.querySelector(".wipe").addEventListener("click", clearSelections)
   document.querySelector(".submit").addEventListener("click", submitMove)
-
 
 });
 </script>

@@ -36,4 +36,20 @@ RSpec.describe Game, type: :model do
       expect(game.check_square(pawn.x_position, pawn.y_position)).to be_instance_of(Pawn)
     end
   end
+
+  describe "check scenarios" do
+    let!(:user1){FactoryBot.create(:user)}
+    let!(:user2){FactoryBot.create(:user)}
+
+    it "check in one move" do
+      game = FactoryBot.create :black_check_in_one_move,
+              white_player_id: user1.id, black_player_id: user2.id
+      black_king = game.kings.create(x_position: 3, y_position: 7, game_id: game.id, color: "black")
+      white_rook = game.rooks.create(x_position: 2, y_position: 2, game_id: game.id, color: "white")
+
+      white_rook.update_attributes(y_position: 7)
+
+      expect(game.in_check?).to be true
+    end
+  end
 end
