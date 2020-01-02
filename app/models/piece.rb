@@ -58,7 +58,7 @@ class Piece < ApplicationRecord
     end
   end
 
-  private
+  #private
   def in_boundary?(x, y)
     x <= 8 && x >= 1 && y <= 8 && y >= 1
   end

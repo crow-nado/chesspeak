@@ -91,4 +91,8 @@ class Game < ApplicationRecord
   def check_square(x, y)
     self.pieces.find_by(x_position: x, y_position: y)
   end
+
+  def in_check?
+    BoardState.initialize(self)
+  end
 end
