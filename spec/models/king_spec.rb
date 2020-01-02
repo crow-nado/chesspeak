@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe King, type: :model do
-  describe "#valid_move?" do
+  fdescribe "#valid_move?" do
     it "can move forward one sqaure" do 
       king = FactoryBot.create :sample_white_king,
              x_position: 3, y_position: 3
@@ -61,6 +61,16 @@ RSpec.describe King, type: :model do
              x_position: 4, y_position: 4, game_id: game.id
 
       expect(king.valid_move?(4,4)).to be true
+    end
+    it "cannot move into check" do
+      game = Game.create()
+      king = FactoryBot.create :sample_white_king,
+             x_position: 3, y_position: 3, game_id: game.id
+      pawn = FactoryBot.create :sample_black_pawn,
+             x_position: 4, y_position: 5, game_id: game.id
+
+      puts game.move_into_check?(3, 4, king.color)
+      expect(king.valid_move?(3,4)).to be false
     end
   end
 end

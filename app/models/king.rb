@@ -5,7 +5,9 @@ class King < Piece
     @valid_moves = []
     adjacentSquares.each do |square|
       piece = self.game.check_square(square[:x], square[:y])
-      @valid_moves.push(square) unless is_friendly(piece)
+      if !is_friendly(piece) && !self.game.move_into_check?(square[:x], square[:y], self.color)
+        @valid_moves.push(square)
+      end
     end
     @valid_moves
   end
@@ -20,6 +22,4 @@ class King < Piece
     end
     squares
   end
-
-
 end
