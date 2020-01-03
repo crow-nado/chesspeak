@@ -96,10 +96,10 @@ class Game < ApplicationRecord
     pieces = self.pieces.where.not(color: king.color)
     pieces.each do |piece|
       if piece.valid_move?(king.x_position, king.y_position)
-        self.state = "Check" 
+        self.update_attribute(:state, "Check") 
         break
       end
-      self.state = "In Progress"
+      self.update_attribute(:state, "In Progress") 
     end
     self.state == "Check" ? true : false
   end
@@ -109,5 +109,11 @@ class Game < ApplicationRecord
     king = self.kings.find_by(color: color)
     king.assign_attributes(x: x, y: y)
     in_check?(king)
+  end
+
+  def board_state
+    kings = []
+    kings.push(self.pieces.find_by(piece_type: "King"))
+    kings.each {|king| in_check?(king) unless king.nil? }
   end
 end

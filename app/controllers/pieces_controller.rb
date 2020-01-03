@@ -1,5 +1,6 @@
 class PiecesController < ApplicationController
   skip_before_action :verify_authenticity_token
+
   #Fetch request for pieces
   def index
     @game = Game.find(params[:game_id])
