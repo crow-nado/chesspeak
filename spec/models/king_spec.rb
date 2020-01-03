@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe King, type: :model do
-  fdescribe "#valid_move?" do
+  describe "#valid_move?" do
     it "can move forward one sqaure" do 
       king = FactoryBot.create :sample_white_king,
              x_position: 3, y_position: 3
