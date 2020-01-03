@@ -37,7 +37,7 @@ RSpec.describe King, type: :model do
              x_position: 3, y_position: 3
       expect(king.valid_move?(4,2)).to be true
     end
-    it "can move backward one sqaure and left one square" do 
+    it "can move backward one square and left one square" do 
       king = FactoryBot.create :sample_white_king,
              x_position: 3, y_position: 3
       expect(king.valid_move?(2,2)).to be true
@@ -72,9 +72,10 @@ RSpec.describe King, type: :model do
       expect(king.valid_move?(3,4)).to be false
       expect(king.x_position).to eq 3
       expect(king.y_position).to eq 3
+      game.reload
       expect(game.state).not_to eq "Check"
     end
-    fit "cannot move into check against a pawn" do
+    it "cannot move into check against a pawn" do
       game = Game.create()
       king = FactoryBot.create :sample_white_king,
              x_position: 3, y_position: 3, game_id: game.id
@@ -82,9 +83,15 @@ RSpec.describe King, type: :model do
                x_position: 4, y_position: 5, game_id: game.id
       expect(pawn.valid_move?(3,4)).to be false
       expect(king.valid_move?(3,4)).to be false
-      # expect(king.x_position).to eq 3
-      # expect(king.y_position).to eq 3
-      # expect(game.state).not_to eq "Check"
+    end
+    it "cannot move into check against a pawn" do
+      game = Game.create()
+      king = FactoryBot.create :sample_black_king,
+             x_position: 4, y_position: 5, game_id: game.id
+      pawn = FactoryBot.create :sample_white_pawn,
+               x_position: 3, y_position: 3, game_id: game.id
+      expect(pawn.valid_move?(4,4)).to be false
+      expect(king.valid_move?(4,4)).to be false
     end
   end
 end
