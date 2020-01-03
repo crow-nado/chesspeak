@@ -66,11 +66,13 @@ RSpec.describe King, type: :model do
       game = Game.create()
       king = FactoryBot.create :sample_white_king,
              x_position: 3, y_position: 3, game_id: game.id
-      pawn = FactoryBot.create :sample_black_pawn,
-             x_position: 4, y_position: 5, game_id: game.id
-
-      puts game.move_into_check?(3, 4, king.color)
+      bishop = FactoryBot.create :sample_black_bishop,
+               x_position: 4, y_position: 5, game_id: game.id
+      expect(bishop.valid_move?(3,4)).to be true
       expect(king.valid_move?(3,4)).to be false
+      expect(king.x_position).to eq 3
+      expect(king.y_position).to eq 3
+      expect(game.state).not_to eq "Check"
     end
   end
 end

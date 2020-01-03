@@ -101,16 +101,13 @@ class Game < ApplicationRecord
       end
       self.state = "In Progress"
     end
-    self.state == "Check"? true : false
+    self.state == "Check" ? true : false
   end
 
-  def move_into_check?(x, y, color)
-    pieces = self.pieces.where.not(color: color)
-    check_found = false
-    pieces.each do |piece|
-      check_found = true if piece.valid_move?(x, y)
-      break 
-    end
-    check_found
+  def still_in_check?(x, y, color)
+    prior_state = self.state
+    king = self.kings.find_by(color: color)
+    king.assign_attributes(x: x, y: y)
+    in_check?(king)
   end
 end
