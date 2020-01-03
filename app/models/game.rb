@@ -105,9 +105,11 @@ class Game < ApplicationRecord
   end
 
   def still_in_check?(x, y, color)
-    prior_state = self.state
+    # prior_state = self.state
     king = self.kings.find_by(color: color)
     king.assign_attributes(x: x, y: y)
+    puts king.x, king.y
+    puts check_square(3,4)
     in_check?(king)
   end
 
@@ -115,5 +117,11 @@ class Game < ApplicationRecord
     kings = []
     kings.push(self.pieces.find_by(piece_type: "King"))
     kings.each {|king| in_check?(king) unless king.nil? }
+  end
+
+  def has_enemy_pawns_diagonal(x,y,color)
+    king = self.kings.find_by(color: color)
+    diagonal_ne_piece = check_square(x+1,y+1)
+    diagonal_ne_piece.is_a Pawn && king.is_enemy(diagonal_ne_piece)
   end
 end

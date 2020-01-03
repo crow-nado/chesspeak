@@ -4,9 +4,12 @@ class King < Piece
   def valid_moves
     @valid_moves = []
     adjacentSquares.each do |square|
-      piece = self.game.check_square(square[:x], square[:y])
-      unless is_friendly(piece) || self.game.still_in_check?(square[:x], square[:y], self.color)
-        @valid_moves.push(square)
+      x, y = square[:x], square[:y]
+      piece = self.game.check_square(x, y)
+      if is_enemy(piece) && !self.game.still_in_check?(x, y, self.color)
+        unless self.game.has_enemy_pawns_diagonal(x, y)
+          @valid_moves.push({x: x, y: y})
+        end
       end
     end
     @valid_moves
@@ -22,4 +25,5 @@ class King < Piece
     end
     squares
   end
+
 end

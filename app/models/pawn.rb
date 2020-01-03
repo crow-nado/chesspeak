@@ -3,7 +3,6 @@ class Pawn < Piece
 
   def valid_moves
     @valid_moves = []
-    add_enemy_diagonal
     if self.is_white_piece?
       @valid_moves.push({x: x, y: y+1}) unless square_occupied?(x, y+1)
       @valid_moves.push({x: x, y: y+2}) if self.first_move? && !is_obstructed_vertical?(x, y+2)
@@ -11,6 +10,7 @@ class Pawn < Piece
       @valid_moves.push({x: x, y: y-1}) unless square_occupied?(x, y-1)
       @valid_moves.push({x: x, y: y-2}) if self.first_move? && !is_obstructed_vertical?(x, y-2)
     end
+    add_enemy_diagonal
     @valid_moves
   end
 
