@@ -8,6 +8,89 @@ class Game < ApplicationRecord
   has_many :pieces
   scope :available, -> { where(black_player_id: nil) }
   attr_accessor :turn_counter, :inactive_player_valid_moves
+  after_initialize :set_turn_counter_to_1, :set_inactive_player_valid_moves
+
+  def set_turn_counter_to_1
+    @turn_counter = 1
+  end
+
+  def set_inactive_player_valid_moves
+    @inactive_player_valid_moves = Array.new
+  end
+
+  def start
+    self.update_attribute(:state, "In Progress")
+  end
+
+  def change_player_turn
+    @turn_counter += 1
+    fill_inactive_player_valid_moves
+    check_board_state
+  end
+
+  def active_color
+    @turn_counter % 2 == 1 ? "white" : "black"
+  end
+
+  def check_square(x, y)
+    self.pieces.find_by(x_position: x, y_position: y)
+  end
+
+  def check_board_state
+    king = self.kings.find_by(color: active_color)
+    if @inactive_player_valid_moves.include?({x: king.x_position, y: king.y_position})
+      puts "Should be updating!"
+      self.update_attribute(:state, "Check")
+    else
+      puts "Sall good"
+      self.update_attribute(:state, "In Progress")
+    end
+    self.state == "Check" ? true : false
+  end
+
+  # def still_in_check?(x, y, color)
+  #   king = self.kings.find_by(color: color)
+  #   king.assign_attributes(x: x, y: y)
+  #   in_check?(king)
+  # end
+
+  # def board_state
+  #   kings = []
+  #   kings.push(self.pieces.find_by(piece_type: "King"))
+  #   kings.each do |king| 
+  #     unless king.nil?
+  #       self.update_attribute(:state, "Check") if in_check?(king)
+  #       break
+  #     end
+  #   end
+  # end
+
+  def has_enemy_pawns_diagonal(x,y,color)
+    king = self.kings.find_by(color: color)
+    if king.is_white_piece?
+      diagonal_east_piece = check_square(x+1,y+1)
+      diagonal_west_piece = check_square(x-1,y+1)
+    else
+      diagonal_east_piece = check_square(x+1,y-1)
+      diagonal_west_piece = check_square(x-1,y-1)
+    end
+    if king.is_enemy(diagonal_east_piece)
+      return true if diagonal_east_piece.is_a? Pawn
+    elsif king.is_enemy(diagonal_west_piece)
+      return true if diagonal_west_piece.is_a? Pawn
+    else
+      return false
+    end
+  end
+
+  def fill_inactive_player_valid_moves
+    @inactive_player_valid_moves = []
+    pieces = self.pieces.where.not(color: active_color)
+    pieces.each do |piece|
+      @inactive_player_valid_moves.push(piece.valid_moves)
+    end
+    @inactive_player_valid_moves = @inactive_player_valid_moves.flatten
+  end
 
   def populate_white_side
     populate_white_pawns
@@ -23,25 +106,6 @@ class Game < ApplicationRecord
     populate_black_knights
     populate_black_bishops
     populate_black_king_and_queen
-  end
-
-  def start
-    self.update_attribute(:state, "In Progress")
-    $turn_counter = 1
-  end
-
-  def change_player_turn
-    inactive_player_valid_moves(active_color)
-    board_state
-    $turn_counter += 1
-  end
-
-  def active_color
-    if $turn_counter % 2 == 1
-      "white"
-    else
-      "black"
-    end
   end
 
 
@@ -94,13 +158,13 @@ class Game < ApplicationRecord
   end
 
   def populate_white_king_and_queen
-    self.kings.create(x_position: 4, y_position: 1, player_id: white_player_id, color: "white")
-    self.queens.create(x_position: 5, y_position: 1, player_id: white_player_id, color: "white")
+    self.kings.create(x_position: 5, y_position: 1, player_id: white_player_id, color: "white")
+    self.queens.create(x_position: 4, y_position: 1, player_id: white_player_id, color: "white")
   end
 
   def populate_black_king_and_queen
-    self.kings.create(x_position: 4, y_position: 8, player_id: black_player_id, color: "black")
-    self.queens.create(x_position: 5, y_position: 8, player_id: black_player_id, color: "black")
+    self.kings.create(x_position: 5, y_position: 8, player_id: black_player_id, color: "black")
+    self.queens.create(x_position: 4, y_position: 8, player_id: black_player_id, color: "black")
   end
 
   def populate_row(row)
@@ -109,61 +173,5 @@ class Game < ApplicationRecord
     end
   end
 
-  def check_square(x, y)
-    self.pieces.find_by(x_position: x, y_position: y)
-  end
 
-  def in_check?(king)
-    state = nil
-    if @inactive_player_valid_moves.include?({x: king.x_position, y: king.y_position})
-        state = "Check"
-    else
-        state = "In Progress"
-    end
-    state == "Check" ? true : false
-  end
-
-  # def still_in_check?(x, y, color)
-  #   king = self.kings.find_by(color: color)
-  #   king.assign_attributes(x: x, y: y)
-  #   in_check?(king)
-  # end
-
-  def board_state
-    kings = []
-    kings.push(self.pieces.find_by(piece_type: "King"))
-    kings.each do |king| 
-      unless king.nil?
-        self.update_attribute(:state, "Check") if in_check?(king)
-        break
-      end
-    end
-  end
-
-  def has_enemy_pawns_diagonal(x,y,color)
-    king = self.kings.find_by(color: color)
-    if king.is_white_piece?
-      diagonal_east_piece = check_square(x+1,y+1)
-      diagonal_west_piece = check_square(x-1,y+1)
-    else
-      diagonal_east_piece = check_square(x+1,y-1)
-      diagonal_west_piece = check_square(x-1,y-1)
-    end
-    if king.is_enemy(diagonal_east_piece)
-      return true if diagonal_east_piece.is_a? Pawn
-    elsif king.is_enemy(diagonal_west_piece)
-      return true if diagonal_west_piece.is_a? Pawn
-    else
-      return false
-    end
-  end
-
-  def inactive_player_valid_moves(color)
-    pieces = self.pieces.where.not(color: color)
-    @inactive_player_valid_moves = []
-    pieces.each do |piece|
-      @inactive_player_valid_moves.push(piece.valid_moves)
-    end
-     @inactive_player_valid_moves = @inactive_player_valid_moves.flatten
-  end
 end
