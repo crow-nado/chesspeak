@@ -10,7 +10,7 @@ class King < Piece
       if !is_friendly(piece)
         unless self.game.has_enemy_pawns_diagonal(x, y, self.color) #|| self.game.inactive_player_valid_moves.include?({x: x, y: y})
           puts self.game.active_color
-          puts self.game.inactive_player_valid_moves
+          puts self.game.inactive_player_valid_moves.inspect
           puts x, y
           @valid_moves.push({x: x, y: y})
         end

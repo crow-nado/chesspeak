@@ -87,9 +87,10 @@ class Game < ApplicationRecord
     @inactive_player_valid_moves = []
     pieces = self.pieces.where.not(color: active_color)
     pieces.each do |piece|
-      @inactive_player_valid_moves.push(piece.valid_moves)
+      moves = piece.valid_moves
+      moves.each { |move| @inactive_player_valid_moves.push(move) }
     end
-    @inactive_player_valid_moves = @inactive_player_valid_moves.flatten
+    @inactive_player_valid_moves
   end
 
   def populate_white_side
