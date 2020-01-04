@@ -7,6 +7,7 @@ class Game < ApplicationRecord
   has_many :queens
   has_many :pieces
   scope :available, -> { where(black_player_id: nil) }
+  attr_accessor :turn_counter, :inactive_player_valid_moves
 
   def populate_white_side
     populate_white_pawns
@@ -23,6 +24,26 @@ class Game < ApplicationRecord
     populate_black_bishops
     populate_black_king_and_queen
   end
+
+  def start
+    @turn_counter = 1
+    self.update_attribute(:state, "In Progress")
+  end
+
+  def change_player_turn
+    inactive_player_valid_moves(active_color)
+    @turn_counter += 1
+    board_state
+  end
+
+  def active_color
+    if @turn_counter % 2 == 1
+      "white"
+    else
+      "black"
+    end
+  end
+
 
   def populate_white_pawns
     8.times do |column|
@@ -93,27 +114,30 @@ class Game < ApplicationRecord
   end
 
   def in_check?(king)
-    pieces = self.pieces.where.not(color: king.color)
-    pieces.each do |piece|
-      if piece.valid_move?(king.x_position, king.y_position)
-        self.update_attribute(:state, "Check") 
-        break
-      end
-      self.update_attribute(:state, "In Progress") 
+    state = nil
+    if @inactive_player_valid_moves.include?({x: king.x_position, y: king.y_position})
+        state = "Check"
+    else
+        state = "In Progress"
     end
-    self.state == "Check" ? true : false
+    state == "Check" ? true : false
   end
 
-  def still_in_check?(x, y, color)
-    king = self.kings.find_by(color: color)
-    king.assign_attributes(x: x, y: y)
-    in_check?(king)
-  end
+  # def still_in_check?(x, y, color)
+  #   king = self.kings.find_by(color: color)
+  #   king.assign_attributes(x: x, y: y)
+  #   in_check?(king)
+  # end
 
   def board_state
     kings = []
     kings.push(self.pieces.find_by(piece_type: "King"))
-    kings.each {|king| in_check?(king) unless king.nil? }
+    kings.each do |king| 
+      unless king.nil?
+        self.update_attribute(:state, "Check") if in_check?(king)
+        break
+      end
+    end
   end
 
   def has_enemy_pawns_diagonal(x,y,color)
@@ -132,5 +156,14 @@ class Game < ApplicationRecord
     else
       return false
     end
+  end
+
+  def inactive_player_valid_moves(color)
+    pieces = self.pieces.where.not(color: color)
+    @inactive_player_valid_moves = []
+    pieces.each do |piece|
+      @inactive_player_valid_moves.push(piece.valid_moves)
+    end
+     @inactive_player_valid_moves = @inactive_player_valid_moves.flatten
   end
 end

@@ -37,6 +37,19 @@ RSpec.describe Game, type: :model do
     end
   end
 
+  describe "#change_player_turn" do
+    it "checks to see whether or not it's the white player's turn" do
+      white_player = FactoryBot.create :user
+      black_player = FactoryBot.create :user
+      game = FactoryBot.create :sample_game, white_player_id: white_player.id,
+             black_player_id: black_player.id
+      game.start
+      expect(game.active_color).to eq "white"
+      game.change_player_turn
+      expect(game.active_color).to eq "black"
+    end
+  end
+
   describe "check scenarios" do
     let!(:user1){FactoryBot.create(:user)}
     let!(:user2){FactoryBot.create(:user)}
@@ -47,10 +60,15 @@ RSpec.describe Game, type: :model do
                white_player_id: user1.id, black_player_id: user2.id
         black_king = game.kings.create(x_position: 3, y_position: 7, game_id: game.id, color: "black")
         white_rook = game.rooks.create(x_position: 3, y_position: 2, game_id: game.id, color: "white")
+        game.start
+
+        game.inactive_player_valid_moves("white")
 
         expect(game.in_check?(black_king)).to be true
 
         black_king.update_attributes(x_position: 2)
+
+        game.inactive_player_valid_moves("white")
 
         expect(game.in_check?(black_king)).to be false
       end
@@ -59,8 +77,14 @@ RSpec.describe Game, type: :model do
                 white_player_id: user1.id, black_player_id: user2.id
         black_king = game.kings.create(x_position: 3, y_position: 7, game_id: game.id, color: "black")
         white_rook = game.rooks.create(x_position: 3, y_position: 2, game_id: game.id, color: "white")
+        game.start
+
+        game.inactive_player_valid_moves("white")
         
         expect(game.in_check?(black_king)).to be true
+
+        game.inactive_player_valid_moves("white")
+
         expect(black_king.valid_move?(3,6)).to be false
       end
     end
@@ -71,8 +95,12 @@ RSpec.describe Game, type: :model do
                 white_player_id: user1.id, black_player_id: user2.id
         black_king = game.kings.create(x_position: 3, y_position: 7, game_id: game.id, color: "black")
         white_rook = game.rooks.create(x_position: 2, y_position: 2, game_id: game.id, color: "white")
+        game.start
+
+        game.inactive_player_valid_moves("white")
         
         expect(game.in_check?(black_king)).to be false
+        game.inactive_player_valid_moves("white")
 
         white_rook.update_attributes(y_position: 7)
 

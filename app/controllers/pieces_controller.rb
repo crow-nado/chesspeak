@@ -21,6 +21,7 @@ class PiecesController < ApplicationController
       captured_piece.update_attributes(x_position: nil, y_position: nil) unless captured_piece.nil?
       piece.update_attributes(piece_params)
       piece.update_attribute(:updated_at, Time.now)
+      game.change_player_turn
       head 200
     else
       head 400

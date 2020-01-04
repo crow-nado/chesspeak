@@ -37,13 +37,17 @@ RSpec.describe PiecesController, type: :controller do
       expect(white_pawn.y_position).to eq(8)
     end
 
-   it "updates the board to reflect the check state after a piece is moved" do
+  it "updates the board to reflect the check state after a piece is moved" do
       game = FactoryBot.create :sample_game,
             white_player_id: 1, black_player_id: 2
       black_king = game.kings.create(x_position: 3, y_position: 7, game_id: game.id, color: "black")
       white_rook = game.rooks.create(x_position: 2, y_position: 2, game_id: game.id, color: "white")
+
+      game.start
+
+      game.inactive_player_valid_moves("black")
         
-      expect(game.state).to eq("Not started")
+      expect(game.state).to eq("In Progress")
 
       patch :update, params: { game_id: game.id, id: white_rook.id, use_route: game_piece_path(game, white_rook), piece: { x_position: 2, y_position: 7 } }
 

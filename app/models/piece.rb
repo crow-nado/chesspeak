@@ -2,7 +2,7 @@ class Piece < ApplicationRecord
   # Overrides default in rails to use "type" and instead use "piece_type"
   self.inheritance_column = 'piece_type'
   belongs_to :game
-  after_update_commit :game_check
+  # after_update_commit :game_check
   attr_accessor :image
   alias_attribute :x, :x_position
   alias_attribute :y, :y_position
@@ -98,6 +98,6 @@ class Piece < ApplicationRecord
   end
 
   def game_check
-    self.game.board_state
+    self.game.change_player_turn
   end
 end

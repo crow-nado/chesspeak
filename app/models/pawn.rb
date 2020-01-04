@@ -30,6 +30,4 @@ class Pawn < Piece
       @valid_moves.push({x: x, y: y})
     end
   end
-
-
 end

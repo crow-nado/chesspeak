@@ -7,7 +7,7 @@ class King < Piece
       x, y = square[:x], square[:y]
       piece = self.game.check_square(x, y)
       if !is_friendly(piece)
-        unless self.game.has_enemy_pawns_diagonal(x, y, self.color) || self.game.still_in_check?(x, y, self.color)
+        unless self.game.has_enemy_pawns_diagonal(x, y, self.color) || self.game.inactive_player_valid_moves(self.color).include?({x: x, y: y})
           @valid_moves.push({x: x, y: y})
         end
       end
@@ -25,5 +25,4 @@ class King < Piece
     end
     squares
   end
-
 end
