@@ -103,6 +103,7 @@ RSpec.describe Game, type: :model do
         game.inactive_player_valid_moves("white")
 
         white_rook.update_attributes(y_position: 7)
+        game.change_player_turn
 
         expect(game.in_check?(black_king)).to be true
       end

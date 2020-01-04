@@ -23,7 +23,7 @@ RSpec.describe PiecesController, type: :controller do
       game.inactive_player_valid_moves("black")
 
       patch :update, params: { game_id: game.id, id: white_pawn.id, use_route: game_piece_path(game, white_pawn), piece: { x_position: 1, y_position: 2 } }
-      puts game.turn_counter
+
       expect(response).to have_http_status(:success)
       white_pawn.reload
       expect(white_pawn.y_position).to eq(2)
