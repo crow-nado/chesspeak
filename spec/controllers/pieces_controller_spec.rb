@@ -19,8 +19,11 @@ RSpec.describe PiecesController, type: :controller do
       white_pawn = FactoryBot.create(:sample_white_pawn)
       game = Game.find(white_pawn.game_id)
 
-      patch :update, params: { game_id: game.id, id: white_pawn.id, use_route: game_piece_path(game, white_pawn), piece: { x_position: 1, y_position: 2 } }
+      game.start
+      game.inactive_player_valid_moves("black")
 
+      patch :update, params: { game_id: game.id, id: white_pawn.id, use_route: game_piece_path(game, white_pawn), piece: { x_position: 1, y_position: 2 } }
+      puts game.turn_counter
       expect(response).to have_http_status(:success)
       white_pawn.reload
       expect(white_pawn.y_position).to eq(2)
@@ -37,7 +40,7 @@ RSpec.describe PiecesController, type: :controller do
       expect(white_pawn.y_position).to eq(8)
     end
 
-  it "updates the board to reflect the check state after a piece is moved" do
+    it "updates the board to reflect the check state after a piece is moved" do
       game = FactoryBot.create :sample_game,
             white_player_id: 1, black_player_id: 2
       black_king = game.kings.create(x_position: 3, y_position: 7, game_id: game.id, color: "black")

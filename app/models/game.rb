@@ -26,18 +26,18 @@ class Game < ApplicationRecord
   end
 
   def start
-    @turn_counter = 1
     self.update_attribute(:state, "In Progress")
+    $turn_counter = 1
   end
 
   def change_player_turn
     inactive_player_valid_moves(active_color)
-    @turn_counter += 1
     board_state
+    $turn_counter += 1
   end
 
   def active_color
-    if @turn_counter % 2 == 1
+    if $turn_counter % 2 == 1
       "white"
     else
       "black"
