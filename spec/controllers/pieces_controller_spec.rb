@@ -18,9 +18,9 @@ RSpec.describe PiecesController, type: :controller do
     it "updates a piece to a new location" do
       white_pawn = FactoryBot.create(:sample_white_pawn)
       game = Game.find(white_pawn.game_id)
+      black_king = FactoryBot.create :sample_black_king, game_id: game.id
 
       game.start
-      game.inactive_player_valid_moves("black")
 
       patch :update, params: { game_id: game.id, id: white_pawn.id, use_route: game_piece_path(game, white_pawn), piece: { x_position: 1, y_position: 2 } }
 
@@ -47,8 +47,6 @@ RSpec.describe PiecesController, type: :controller do
       white_rook = game.rooks.create(x_position: 2, y_position: 2, game_id: game.id, color: "white")
 
       game.start
-
-      game.inactive_player_valid_moves("black")
         
       expect(game.state).to eq("In Progress")
 
