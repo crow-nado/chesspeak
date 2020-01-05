@@ -24,7 +24,6 @@ class Game < ApplicationRecord
 
   def change_player_turn
     @turn_counter += 1
-    fill_inactive_player_valid_moves
     check_board_state
   end
 
@@ -39,31 +38,12 @@ class Game < ApplicationRecord
   def check_board_state
     king = self.kings.find_by(color: active_color)
     if @inactive_player_valid_moves.include?({x: king.x_position, y: king.y_position})
-      puts "Should be updating!"
       self.update_attribute(:state, "Check")
     else
-      puts "Sall good"
       self.update_attribute(:state, "In Progress")
     end
     self.state == "Check" ? true : false
   end
-
-  # def still_in_check?(x, y, color)
-  #   king = self.kings.find_by(color: color)
-  #   king.assign_attributes(x: x, y: y)
-  #   in_check?(king)
-  # end
-
-  # def board_state
-  #   kings = []
-  #   kings.push(self.pieces.find_by(piece_type: "King"))
-  #   kings.each do |king| 
-  #     unless king.nil?
-  #       self.update_attribute(:state, "Check") if in_check?(king)
-  #       break
-  #     end
-  #   end
-  # end
 
   def has_enemy_pawns_diagonal(x,y,color)
     king = self.kings.find_by(color: color)
@@ -81,6 +61,11 @@ class Game < ApplicationRecord
     else
       return false
     end
+  end
+
+  def move_into_check(x,y)
+    @inactive_player_valid_moves = fill_inactive_player_valid_moves
+    @inactive_player_valid_moves.include?({x: x, y: y})
   end
 
   def fill_inactive_player_valid_moves
