@@ -24,6 +24,7 @@ class Game < ApplicationRecord
 
   def change_player_turn
     @turn_counter += 1
+    fill_inactive_player_valid_moves
     check_board_state
   end
 
