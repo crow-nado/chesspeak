@@ -10,6 +10,11 @@ class Game < ApplicationRecord
   attr_accessor :turn_counter, :inactive_player_valid_moves
   after_initialize :set_turn_counter_to_1, :set_inactive_player_valid_moves
 
+  def as_json(options={})
+    super(only: [:active_color, :state],
+          methods: [:active_color])
+  end
+
   def set_turn_counter_to_1
     @turn_counter = 1
   end

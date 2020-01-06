@@ -55,5 +55,31 @@ RSpec.describe PiecesController, type: :controller do
       game.reload
       expect(game.state).to eq("Check")
     end
+
+    fit "tells the players the active player" do
+      user_white = FactoryBot.create :user
+      user_black = FactoryBot.create :user
+      game = FactoryBot.create :sample_game,
+      white_player_id: user_white.id, black_player_id: user_black.id
+      game.populate_white_side
+      game.populate_black_side
+      game.start
+
+      white_pawn_1 = game.pawns.find_by(x_position: 6, y_position: 2)
+      white_pawn_2 = game.pawns.find_by(x_position: 7, y_position: 2)
+      white_king   = game.kings.find_by(color: "white")
+
+      black_pawn   = game.pawns.find_by(x_position: 5, y_position: 7)
+      black_queen  = game.queens.find_by(color: "black")
+
+      patch :update, params: {
+        game_id: game.id, id: white_pawn_1.id, use_route: game_piece_path(game, white_pawn_1), piece: {
+          x_position: 6, y_position: 3
+        }
+      }
+      game_response = JSON.parse(response.body)
+      expect(game_response["state"]).to eq "In Progress"
+      expect(game_response["active_color"]).to eq "black"
+    end
   end
 end

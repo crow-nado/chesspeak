@@ -26,7 +26,7 @@ class Piece < ApplicationRecord
   end
 
   def valid_move?(x, y)
-    valid_moves.include?({x: x, y: y}) && in_boundary?(x, y)
+    valid_moves.include?({x: x, y: y}) && in_boundary?(x, y) # && self.game.state != "Checkmate"
   end
 
   def first_move?
