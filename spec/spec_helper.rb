@@ -97,5 +97,30 @@ RSpec.configure do |config|
 =end
 
   #Brings in Capybara for testing in RSpec
-  require 'capybara/rspec'
+
 end
+
+  require 'capybara/rspec'
+  # require 'capybara-screenshot/rspec'
+  require 'selenium-webdriver'
+  require 'webdrivers'
+  # Capybara::Screenshot.autosave_on_failure = true
+
+
+# Capybara.register_driver :chrome do |app|
+#   Capybara::Selenium::Driver.new(app, browser: :chrome)
+# end
+
+# Capybara.register_driver :headless_chrome do |app|
+#   capabilities = Selenium::WebDriver::Remote::Capabilities.chrome(
+#     chromeOptions: { args: %w(headless disable-gpu) }
+#   )
+
+#   Capybara::Selenium::Driver.new app,
+#     browser: :chrome,
+#     desired_capabilities: capabilities
+# end
+
+# Capybara.javascript_driver = :headless_chrome
+
+  # Selenium::WebDriver::Firefox::Binary.path='C:\Program Files (x86)\Mozilla Firefox\firefox.exe'

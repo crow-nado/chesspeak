@@ -36,4 +36,66 @@ RSpec.describe Game, type: :model do
       expect(game.check_square(pawn.x_position, pawn.y_position)).to be_instance_of(Pawn)
     end
   end
+
+  describe "#change_player_turn" do
+    it "checks to see whether or not it's the white player's turn" do
+      white_player = FactoryBot.create :user
+      black_player = FactoryBot.create :user
+      game = FactoryBot.create :sample_game, white_player_id: white_player.id,
+             black_player_id: black_player.id
+      game.populate_white_side
+      game.populate_black_side
+      game.start
+      expect(game.active_color).to eq "white"
+      game.change_player_turn
+      expect(game.active_color).to eq "black"
+    end
+  end
+
+  describe "check scenarios" do
+    let!(:user1){FactoryBot.create(:user)}
+    let!(:user2){FactoryBot.create(:user)}
+
+    context "active player in check" do
+      it "allows a player to move out of check" do
+        game = FactoryBot.create :sample_game,
+               white_player_id: user1.id, black_player_id: user2.id
+        white_king = game.kings.create(x_position: 5, y_position: 1, game_id: game.id, color: "white")
+        black_king = game.kings.create(x_position: 3, y_position: 7, game_id: game.id, color: "black")
+        white_rook = game.rooks.create(x_position: 2, y_position: 2, game_id: game.id, color: "white")
+        game.start
+
+        white_rook.update_attributes(x_position: 3)
+        game.change_player_turn
+        expect(game.state).to eq "Check"
+        black_king.update_attributes(x_position: 2)
+        game.change_player_turn
+        expect(game.state).not_to eq "Check"
+      end
+      it "requires a player move out of check" do
+        game = FactoryBot.create :sample_game,
+                white_player_id: user1.id, black_player_id: user2.id
+        black_king = game.kings.create(x_position: 3, y_position: 7, game_id: game.id, color: "black")
+        white_rook = game.rooks.create(x_position: 3, y_position: 2, game_id: game.id, color: "white")
+        game.start
+        game.change_player_turn
+        expect(game.state).to eq "Check"
+        #expect(black_king.valid_move?(3,6)).to be false
+      end
+    end
+
+    context "check in one move" do
+      it "allows a player put an opponent in check" do
+        game = FactoryBot.create :sample_game,
+                white_player_id: user1.id, black_player_id: user2.id
+        black_king = game.kings.create(x_position: 3, y_position: 7, game_id: game.id, color: "black")
+        white_rook = game.rooks.create(x_position: 2, y_position: 2, game_id: game.id, color: "white")
+        game.start
+        expect(game.state).to eq "In Progress"
+        white_rook.update_attributes(y_position: 7)
+        game.change_player_turn
+        expect(game.state).to eq "Check"
+      end
+    end
+  end
 end

@@ -55,6 +55,7 @@ describe "game setup", type: :feature do
     expect(game.pawns.find_by(y_position: 2)).to be_instance_of(Pawn)
     expect(game.pieces.count).to eq 16
     expect(page).to have_content("Player 1 Ready!")
+    expect(page).to have_content("Not started")
   end
 
   it "joins an existing game" do
@@ -68,6 +69,7 @@ describe "game setup", type: :feature do
     expect(page).to have_content("Player 1 Ready!")
     expect(page).to have_content("Player 2 Ready!")
     expect(page).to have_content(game.name)
+    expect(page).to have_content("In Progress")
   end
 
 end

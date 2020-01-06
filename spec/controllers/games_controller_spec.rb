@@ -36,6 +36,7 @@ RSpec.describe GamesController, type: :controller do
       #Test game created
       game = Game.last
       expect(game.name).to eq("Test Game!")
+      expect(game.state).to eq("Not started")
       expect(response).to redirect_to game_path(game.id)
       #Test player connection
       player1 = User.find_by(id: game.white_player_id).username
@@ -82,6 +83,8 @@ RSpec.describe GamesController, type: :controller do
       user2 = FactoryBot.create(:user)
       sign_in user2
 
+      expect(game.state).to eq("Not started")
+
       patch :update, params: { id: game.id, game: { black_player_id: user2.id } }
 
       expect(response).to redirect_to game_path(game.id)
@@ -89,6 +92,7 @@ RSpec.describe GamesController, type: :controller do
       #Verifies 2nd Player was added to the Game
       player2 = User.find_by(id: game.black_player_id)
       expect(game.black_player_id).to eq(user2.id)
+      expect(game.state).to eq("In Progress")
       expect(player2.username).to eq(user2.username)
     end
   end
