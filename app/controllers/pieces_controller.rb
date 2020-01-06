@@ -1,5 +1,6 @@
 class PiecesController < ApplicationController
   skip_before_action :verify_authenticity_token
+
   #Fetch request for pieces
   def index
     @game = Game.find(params[:game_id])
@@ -20,6 +21,7 @@ class PiecesController < ApplicationController
       captured_piece.update_attributes(x_position: nil, y_position: nil) unless captured_piece.nil?
       piece.update_attributes(piece_params)
       piece.update_attribute(:updated_at, Time.now)
+      game.change_player_turn
       head 200
     else
       head 400

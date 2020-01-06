@@ -1,12 +1,25 @@
 class King < Piece
   belongs_to :game
 
+  def valid_move?(x, y)
+    if !in_boundary?(x,y) || self.game.move_into_check(x,y)
+      return false
+    elsif valid_moves.include?({x: x, y: y})
+      return true
+    else
+      return false
+    end
+  end
+
   def valid_moves
     @valid_moves = []
     adjacentSquares.each do |square|
-      piece = self.game.check_square(square[:x], square[:y])
-      unless is_friendly(piece) || self.game.still_in_check?(square[:x], square[:y], self.color)
-        @valid_moves.push(square)
+      x, y = square[:x], square[:y]
+      piece = self.game.check_square(x, y)
+      if !is_friendly(piece)
+        unless self.game.has_enemy_pawns_diagonal(x, y, self.color) #|| self.game.inactive_player_valid_moves.include?({x: x, y: y})
+          @valid_moves.push({x: x, y: y})
+        end
       end
     end
     @valid_moves
