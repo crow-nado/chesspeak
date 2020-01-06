@@ -97,5 +97,36 @@ RSpec.describe Game, type: :model do
         expect(game.state).to eq "Check"
       end
     end
+
+    context "checkmate" do
+      it "ends the game when the king is in checkmate" do
+        game = FactoryBot.create :sample_game,
+        white_player_id: user1.id, black_player_id: user2.id
+        game.populate_white_side
+        game.populate_black_side
+
+        #Fool's checkmate
+        white_pawn_1 = game.pawns.find_by(x_position: 6, y_position: 2)
+        white_pawn_2 = game.pawns.find_by(x_position: 7, y_position: 2)
+        white_king   = game.kings.find_by(color: "white")
+
+        black_pawn   = game.pawns.find_by(x_position: 5, y_position: 7)
+        black_queen  = game.queens.find_by(color: "black")
+
+        game.start
+
+        white_pawn_1.update_attributes(y_position: 3)
+        game.change_player_turn
+        black_pawn.update_attributes(y_position: 5)
+        game.change_player_turn
+        white_pawn_2.update_attributes(y_position: 4)
+        game.change_player_turn
+        black_queen.update_attributes(x_position: 8, y_position: 4)
+        game.change_player_turn
+
+        expect(game.state).to eq "Checkmate"
+      end
+    end
+
   end
 end

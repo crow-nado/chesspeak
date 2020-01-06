@@ -82,8 +82,6 @@ RSpec.describe King, type: :model do
       game.start
       game.change_player_turn
       game.change_player_turn
-
-      puts game.inactive_player_valid_moves
       
       expect(white_king.valid_move?(3,4)).to be false
     end

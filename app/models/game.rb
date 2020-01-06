@@ -25,7 +25,9 @@ class Game < ApplicationRecord
   def change_player_turn
     @turn_counter += 1
     fill_inactive_player_valid_moves
-    check_board_state
+    king = self.kings.find_by(color: active_color)
+    check_board_state(king)
+    check_for_checkmate(king) if self.state == "Check"
   end
 
   def active_color
@@ -36,14 +38,20 @@ class Game < ApplicationRecord
     self.pieces.find_by(x_position: x, y_position: y)
   end
 
-  def check_board_state
-    king = self.kings.find_by(color: active_color)
+  def check_board_state(king)
     if @inactive_player_valid_moves.include?({x: king.x_position, y: king.y_position})
       self.update_attribute(:state, "Check")
     else
       self.update_attribute(:state, "In Progress")
     end
     self.state == "Check" ? true : false
+  end
+
+  def check_for_checkmate(king)
+    possible_moves = king.valid_moves.keep_if { |move| king.in_boundary?(move[:x], move[:y]) }
+    if possible_moves & @inactive_player_valid_moves == possible_moves
+      self.update_attribute(:state, "Checkmate")
+    end
   end
 
   def has_enemy_pawns_diagonal(x,y,color)
