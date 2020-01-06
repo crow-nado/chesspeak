@@ -90,6 +90,8 @@ document.addEventListener("DOMContentLoaded", function(){
     initialSquare.removeEventListener("click", updateActivePiece);
 
     change_turns();
+    //reloadState();
+    document.location.reload(true);
   }
 
   function change_turns() {
@@ -100,6 +102,12 @@ document.addEventListener("DOMContentLoaded", function(){
     }
     activePlayer = setActivePlayer();
   }
+
+  // function reloadState() {
+  //   let stateContainer = document.getElementById("state");
+  //   let gameState = "<%= @game.state %>";
+  //   stateContainer.innerHTML = gameState;
+  // }
 
   // Maybe attach different event handlers depending on the piece type (instead of for each empty div)
   document.querySelectorAll('.box').forEach( box => {
@@ -124,7 +132,7 @@ document.addEventListener("DOMContentLoaded", function(){
 
 <div class="text-center">
   <h1><%= @game.name %></h1>
-  <h2><%= @game.state %></h2>
+  <h2 id="state"></h2>
 </div>
 
 
