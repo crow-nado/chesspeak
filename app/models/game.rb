@@ -35,16 +35,19 @@ class Game < ApplicationRecord
     king = self.kings.find_by(color: active_color)
     if inactive_player_valid_moves.include?({x: king.x_position, y: king.y_position})
       self.update_attribute(:state, "Check")
+      check_for_checkmate(king)
     else
       self.update_attribute(:state, "In Progress")
     end
-    self.state == "Check" ? true : false
+    self.state == "Check" || self.state == "Checkmate" ? true : false
   end
 
   def check_for_checkmate(king)
     possible_moves = king.valid_moves.keep_if { |move| king.in_boundary?(move[:x], move[:y]) }
     if possible_moves & inactive_player_valid_moves == possible_moves
       self.update_attribute(:state, "Checkmate")
+      self.lock!
+      self.pieces.each { |piece| piece.lock! }
     end
   end
 

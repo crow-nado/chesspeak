@@ -77,8 +77,12 @@ document.addEventListener("DOMContentLoaded", function(){
   }
 
   function updateGameState(game_response) {
-    activeColor = game_response.active_color;
-    gameStateDiv.innerHTML = game_response.state;
+    gameStateDiv.innerHTML = game_response.state
+    if (game_response.state == "Checkmate") {
+      activeColor = null;
+    } else {
+      activeColor = game_response.active_color;
+    }
   }
 
   function clearSelections() {
