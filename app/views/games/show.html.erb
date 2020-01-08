@@ -2,13 +2,6 @@
 document.addEventListener("DOMContentLoaded", function(){
   let activePiece;
   let destinationSquare;
-  // let activePlayer = ( setActivePlayer = () => {
-  //   if (localStorage.getItem('ActivePlayer') == null) {
-  //     localStorage.setItem('ActivePlayer', 'white');
-  //   }
-  //   return localStorage.getItem('ActivePlayer');
-  // })();
-
   let activeColor;
   let gameStateDiv = document.getElementById("state");
 
@@ -41,6 +34,8 @@ document.addEventListener("DOMContentLoaded", function(){
     .then(response => response.json())
     .then (json => renderInitialBoard(json))
     .catch(error => console.log(error));
+
+
 
   function submitMove() {
     let [newX, newY] = [destinationSquare.dataset.x, destinationSquare.dataset.y]
@@ -82,7 +77,6 @@ document.addEventListener("DOMContentLoaded", function(){
   }
 
   function updateGameState(game_response) {
-    console.log(game_response);
     activeColor = game_response.active_color;
     gameStateDiv.innerHTML = game_response.state;
   }
@@ -106,26 +100,8 @@ document.addEventListener("DOMContentLoaded", function(){
     initialSquare.removeAttribute("data-color");
     initialSquare.removeAttribute("data-piece-id");
     initialSquare.removeEventListener("click", updateActivePiece);
-
-    // change_turns();
   }
 
-  // function change_turns() {
-  //   if (localStorage.getItem('ActivePlayer') == 'white') {
-  //     localStorage.setItem('ActivePlayer', 'black');
-  //   } else {
-  //     localStorage.setItem('ActivePlayer', 'white');
-  //   }
-  //   activePlayer = setActivePlayer();
-  // }
-
-  // function reloadState() {
-  //   let stateContainer = document.getElementById("state");
-  //   let gameState = "<%= @game.state %>";
-  //   stateContainer.innerHTML = gameState;
-  // }
-
-  // Maybe attach different event handlers depending on the piece type (instead of for each empty div)
   document.querySelectorAll('.box').forEach( box => {
     box.addEventListener("click", function(event) {
       if (activePiece) {
