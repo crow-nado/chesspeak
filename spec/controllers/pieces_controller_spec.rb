@@ -19,6 +19,7 @@ RSpec.describe PiecesController, type: :controller do
       white_pawn = FactoryBot.create(:sample_white_pawn)
       game = Game.find(white_pawn.game_id)
       black_king = FactoryBot.create :sample_black_king, game_id: game.id
+      white_king = FactoryBot.create :sample_white_king, game_id: game.id
 
       game.start
 
@@ -45,6 +46,7 @@ RSpec.describe PiecesController, type: :controller do
             white_player_id: 1, black_player_id: 2
       black_king = game.kings.create(x_position: 3, y_position: 7, game_id: game.id, color: "black")
       white_rook = game.rooks.create(x_position: 2, y_position: 2, game_id: game.id, color: "white")
+      white_king = FactoryBot.create :sample_white_king, game_id: game.id
 
       game.start
         

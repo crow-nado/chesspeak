@@ -19,11 +19,16 @@ class PiecesController < ApplicationController
     piece = Piece.find(params[:id])
     if piece.valid_move?(new_x, new_y)
       captured_piece.destroy unless captured_piece.nil?
-      piece.update_attributes(piece_params)
-      piece.update_attribute(:updated_at, Time.now)
-      @game.change_player_turn
-      @game.check_board_state
-      render_gamestate_without_pieces
+      piece.assign_attributes(piece_params)
+      unless @game.check_board_state
+        piece.save
+        piece.update_attribute(:updated_at, Time.now)
+        @game.change_player_turn
+        @game.check_board_state
+        render_gamestate_without_pieces
+      else
+        head 400
+      end
     else
       head 400
     end
