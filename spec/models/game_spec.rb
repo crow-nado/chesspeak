@@ -118,6 +118,5 @@ RSpec.describe Game, type: :model do
         expect(game.state).to eq "Checkmate"
       end
     end
-
   end
 end

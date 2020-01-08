@@ -22,7 +22,6 @@ class PiecesController < ApplicationController
       piece.assign_attributes(piece_params)
       unless @game.board_in_check?
         piece.save
-        piece.update_attribute(:updated_at, Time.now)
         @game.change_player_turn
         @game.board_in_check?
         render_gamestate_without_pieces

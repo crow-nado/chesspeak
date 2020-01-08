@@ -33,12 +33,12 @@ RSpec.describe GamesController, type: :controller do
           name: "Test Game!" 
         }
       }
-      #Test game created
+
       game = Game.last
       expect(game.name).to eq("Test Game!")
       expect(game.state).to eq("Not started")
       expect(response).to redirect_to game_path(game.id)
-      #Test player connection
+
       player1 = User.find_by(id: game.white_player_id).username
       expect(game.white_player_id).to eq(user.id)
       expect(player1).to eq(user.username)

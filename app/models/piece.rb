@@ -2,7 +2,6 @@ class Piece < ApplicationRecord
   # Overrides default in rails to use "type" and instead use "piece_type"
   self.inheritance_column = 'piece_type'
   belongs_to :game
-  # after_update_commit :game_check
   attr_accessor :image
   alias_attribute :x, :x_position
   alias_attribute :y, :y_position
@@ -26,7 +25,7 @@ class Piece < ApplicationRecord
   end
 
   def valid_move?(x, y)
-    valid_moves.include?({x: x, y: y}) && in_boundary?(x, y) # && self.game.state != "Checkmate"
+    valid_moves.include?({x: x, y: y}) && in_boundary?(x, y)
   end
 
   def first_move?
@@ -59,7 +58,6 @@ class Piece < ApplicationRecord
     end
   end
 
-  #private
   def in_boundary?(x, y)
     x <= 8 && x >= 1 && y <= 8 && y >= 1
   end

@@ -123,7 +123,6 @@ RSpec.describe Pawn, type: :model do
     end
   end
 
-
   describe "#add_enemy_diagonal" do
     context "white piece" do
       it "should update valid_moves with a diagonal square occupied by an enemy" do

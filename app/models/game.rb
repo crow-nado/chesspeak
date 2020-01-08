@@ -8,11 +8,6 @@ class Game < ApplicationRecord
   has_many :pieces
   scope :available, -> { where(black_player_id: nil) }
 
-  # def as_json(options={})
-  #   super(only:    [:state],
-  #         methods: [:active_player_color, :pieces])
-  # end
-
   def start
     self.update_attribute(:state, "In Progress")
     self.update_attribute(:player_whites_turn, true)

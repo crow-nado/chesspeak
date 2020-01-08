@@ -1,6 +1,5 @@
 require 'rails_helper'
 
-#Initial tests to confirm Capybara successfully installed
 describe "landing page", type: :feature do
   it "asks a user to sign in or sign up if they are not already signed in" do
     visit '/'
@@ -71,34 +70,4 @@ describe "game setup", type: :feature do
     expect(page).to have_content(game.name)
     # expect(page).to have_content("In Progress") -> Javascript not working in this test
   end
-
 end
-
-
-#Initial tests to confirm FactoryBot successfully installed
-
-# These fail with Foundation (Pop ups do not appear. User is either shown the page again or successfully redirected)
-
-#describe "user sign-in", type: :feature do
-#  it "signs in in a user" do
-#    user = FactoryBot.create(:user)
-#   visit '/users/sign_in'
-#
-#    fill_in 'Email', with: user.email
-#    fill_in 'Password', with: user.password
-#    click_button 'Log in'
-#
-#    expect(page).to have_content('successfully')
-#  end
-#
-#  it "fails user sign-in" do
-#    visit '/users/sign_in'
-#
-#    fill_in 'Email', with: 'incorrectEmail@gmail.com'
-#    fill_in 'Password', with: 'notPassword'
-#    click_button 'Log in'
-#
-#    expect(page).to have_content('Invalid')
-#  end
-#
-#end
