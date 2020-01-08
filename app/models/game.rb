@@ -25,17 +25,14 @@ class Game < ApplicationRecord
 
   def change_player_turn
     self.toggle!(:player_whites_turn)
-    king = self.kings.find_by(color: active_color)
-    check_board_state(king)
-    check_for_checkmate(king) if self.state == "Check"
   end
 
   def check_square(x, y)
     self.pieces.find_by(x_position: x, y_position: y)
   end
 
-  def check_board_state(king)
-    puts king.inspect
+  def check_board_state
+    king = self.kings.find_by(color: active_color)
     if inactive_player_valid_moves.include?({x: king.x_position, y: king.y_position})
       self.update_attribute(:state, "Check")
     else

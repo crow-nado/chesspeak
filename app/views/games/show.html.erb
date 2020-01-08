@@ -10,13 +10,13 @@ document.addEventListener("DOMContentLoaded", function(){
   // })();
 
   let activeColor;
-  let gameState;
+  let gameStateDiv = document.getElementById("state");
 
   let fetchBoard = fetch("<%= game_pieces_path(@game) %>");
 
   function renderInitialBoard (json) {
     activeColor = json.active_color;
-    gameState = json.state;
+    gameStateDiv.innerHTML = json.state;
     pieces = json.pieces;
     pieces.forEach( piece => {
       if (piece.x_position && piece.y_position) {
@@ -52,7 +52,6 @@ document.addEventListener("DOMContentLoaded", function(){
     submitPieceUpdate(activePiece.dataset.pieceId, piecePayload)
       .then(response => checkMove(response))
       .then(game_response => updateGameState(game_response))
-      .then(() => clearSelections())
       .catch(error => console.log(error));
   }
 
@@ -71,16 +70,21 @@ document.addEventListener("DOMContentLoaded", function(){
     if (response.status === 200) {
       game_response = response.json();
       updatePieceLocation();
+      clearSelections();
       return game_response;
     } else {
       alert("That is not a valid move");
+      return new Promise((resolve, reject) => {
+        clearSelections();
+        reject("Please check the Network for Errors");
+      });
     }    
   }
 
   function updateGameState(game_response) {
     console.log(game_response);
     activeColor = game_response.active_color;
-    gameState = game_response.state;
+    gameStateDiv.innerHTML = game_response.state;
   }
 
   function clearSelections() {
@@ -144,7 +148,7 @@ document.addEventListener("DOMContentLoaded", function(){
 
 <div class="text-center">
   <h1><%= @game.name %></h1>
-  <h2 id="state"><%= @game.state %></h2>
+  <h2 id="state"></h2>
 </div>
 
 
