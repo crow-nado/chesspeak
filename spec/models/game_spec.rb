@@ -77,11 +77,11 @@ RSpec.describe Game, type: :model do
         game.change_player_turn; game.check_board_state
         expect(game.state).not_to eq "Check"
       end
-      xit "requires a player move out of check" do
+      fit "requires a player move out of check" do
         white_rook.update_attributes(x_position: 3)
         game.update_attributes(player_whites_turn: false)
         expect(game.state).to eq "Check"
-        #expect(black_king.valid_move?(3,6)).to be false
+        expect(black_king.valid_move?(3,6)).to be false
       end
     end
 
