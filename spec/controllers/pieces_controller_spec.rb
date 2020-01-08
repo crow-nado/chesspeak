@@ -56,7 +56,7 @@ RSpec.describe PiecesController, type: :controller do
       expect(game.state).to eq("Check")
     end
 
-    fit "tells the players the active player" do
+    it "tells the players the active player" do
       user_white = FactoryBot.create :user
       user_black = FactoryBot.create :user
       game = FactoryBot.create :sample_game,

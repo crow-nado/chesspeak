@@ -2,18 +2,23 @@
 document.addEventListener("DOMContentLoaded", function(){
   let activePiece;
   let destinationSquare;
-  let activePlayer = ( setActivePlayer = () => {
-    if (localStorage.getItem('ActivePlayer') == null) {
-      localStorage.setItem('ActivePlayer', 'white');
-    }
-    return localStorage.getItem('ActivePlayer');
-  })();
+  // let activePlayer = ( setActivePlayer = () => {
+  //   if (localStorage.getItem('ActivePlayer') == null) {
+  //     localStorage.setItem('ActivePlayer', 'white');
+  //   }
+  //   return localStorage.getItem('ActivePlayer');
+  // })();
+
+  let activeColor;
+  let gameState;
 
   let fetchBoard = fetch("<%= game_pieces_path(@game) %>");
 
   function renderInitialBoard (json) {
-    console.log(json);
-    json.forEach( piece => {
+    activeColor = json.active_color;
+    gameState = json.state;
+    pieces = json.pieces;
+    pieces.forEach( piece => {
       if (piece.x_position && piece.y_position) {
         let [x, y] = [piece.x_position, piece.y_position];
         let boardSquare = document.querySelector(`[data-x='${x}'][data-y='${y}']`);
@@ -26,7 +31,7 @@ document.addEventListener("DOMContentLoaded", function(){
   };
 
   function updateActivePiece() {
-    if (!activePiece && event.target.dataset.color == activePlayer) {
+    if (!activePiece && event.target.dataset.color == activeColor) {
       activePiece = event.target;
       activePiece.classList.add("initial");
     }
@@ -46,6 +51,7 @@ document.addEventListener("DOMContentLoaded", function(){
     }
     submitPieceUpdate(activePiece.dataset.pieceId, piecePayload)
       .then(response => checkMove(response))
+      .then(game_response => updateGameState(game_response))
       .then(() => clearSelections())
       .catch(error => console.log(error));
   }
@@ -63,10 +69,18 @@ document.addEventListener("DOMContentLoaded", function(){
 
   function checkMove(response) {
     if (response.status === 200) {
+      game_response = response.json();
       updatePieceLocation();
+      return game_response;
     } else {
       alert("That is not a valid move");
     }    
+  }
+
+  function updateGameState(game_response) {
+    console.log(game_response);
+    activeColor = game_response.active_color;
+    gameState = game_response.state;
   }
 
   function clearSelections() {
@@ -80,7 +94,7 @@ document.addEventListener("DOMContentLoaded", function(){
   function updatePieceLocation() {
     let initialSquare = activePiece;
     destinationSquare.innerHTML = initialSquare.innerHTML;
-    destinationSquare.setAttribute("data-color", activePlayer);
+    destinationSquare.setAttribute("data-color", activeColor);
     destinationSquare.setAttribute("data-piece-id", initialSquare.dataset.pieceId); 
     destinationSquare.addEventListener("click", updateActivePiece);
 
@@ -89,19 +103,17 @@ document.addEventListener("DOMContentLoaded", function(){
     initialSquare.removeAttribute("data-piece-id");
     initialSquare.removeEventListener("click", updateActivePiece);
 
-    change_turns();
-    //reloadState();
-    document.location.reload(true);
+    // change_turns();
   }
 
-  function change_turns() {
-    if (localStorage.getItem('ActivePlayer') == 'white') {
-      localStorage.setItem('ActivePlayer', 'black');
-    } else {
-      localStorage.setItem('ActivePlayer', 'white');
-    }
-    activePlayer = setActivePlayer();
-  }
+  // function change_turns() {
+  //   if (localStorage.getItem('ActivePlayer') == 'white') {
+  //     localStorage.setItem('ActivePlayer', 'black');
+  //   } else {
+  //     localStorage.setItem('ActivePlayer', 'white');
+  //   }
+  //   activePlayer = setActivePlayer();
+  // }
 
   // function reloadState() {
   //   let stateContainer = document.getElementById("state");

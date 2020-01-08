@@ -7,36 +7,27 @@ class Game < ApplicationRecord
   has_many :queens
   has_many :pieces
   scope :available, -> { where(black_player_id: nil) }
-  attr_accessor :turn_counter, :inactive_player_valid_moves
-  after_initialize :set_turn_counter_to_1, :set_inactive_player_valid_moves
 
-  def as_json(options={})
-    super(only: [:active_color, :state],
-          methods: [:active_color])
-  end
-
-  def set_turn_counter_to_1
-    @turn_counter = 1
-  end
-
-  def set_inactive_player_valid_moves
-    @inactive_player_valid_moves = Array.new
-  end
+  # def as_json(options={})
+  #   super(only:    [:state],
+  #         methods: [:active_player_color, :pieces])
+  # end
 
   def start
     self.update_attribute(:state, "In Progress")
-  end
-
-  def change_player_turn
-    @turn_counter += 1
-    fill_inactive_player_valid_moves
-    king = self.kings.find_by(color: active_color)
-    check_board_state(king)
-    check_for_checkmate(king) if self.state == "Check"
+    self.update_attribute(:player_whites_turn, true)
   end
 
   def active_color
-    @turn_counter % 2 == 1 ? "white" : "black"
+    player_whites_turn == true ? "white" : "black"
+  end
+
+
+  def change_player_turn
+    self.toggle!(:player_whites_turn)
+    king = self.kings.find_by(color: active_color)
+    check_board_state(king)
+    check_for_checkmate(king) if self.state == "Check"
   end
 
   def check_square(x, y)
@@ -44,7 +35,8 @@ class Game < ApplicationRecord
   end
 
   def check_board_state(king)
-    if @inactive_player_valid_moves.include?({x: king.x_position, y: king.y_position})
+    puts king.inspect
+    if inactive_player_valid_moves.include?({x: king.x_position, y: king.y_position})
       self.update_attribute(:state, "Check")
     else
       self.update_attribute(:state, "In Progress")
@@ -54,7 +46,7 @@ class Game < ApplicationRecord
 
   def check_for_checkmate(king)
     possible_moves = king.valid_moves.keep_if { |move| king.in_boundary?(move[:x], move[:y]) }
-    if possible_moves & @inactive_player_valid_moves == possible_moves
+    if possible_moves & inactive_player_valid_moves == possible_moves
       self.update_attribute(:state, "Checkmate")
     end
   end
@@ -78,11 +70,10 @@ class Game < ApplicationRecord
   end
 
   def move_into_check(x,y)
-    @inactive_player_valid_moves = fill_inactive_player_valid_moves
-    @inactive_player_valid_moves.include?({x: x, y: y})
+    inactive_player_valid_moves.include?({x: x, y: y})
   end
 
-  def fill_inactive_player_valid_moves
+  def inactive_player_valid_moves
     @inactive_player_valid_moves = []
     pieces = self.pieces.where.not(color: active_color)
     pieces.each do |piece|

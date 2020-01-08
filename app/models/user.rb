@@ -5,4 +5,5 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable
 
   validates_format_of :username, with: /^[a-zA-Z0-9_\.]*$/, :multiline => true
+
 end
