@@ -20,11 +20,11 @@ class PiecesController < ApplicationController
     if piece.valid_move?(new_x, new_y)
       captured_piece.destroy unless captured_piece.nil?
       piece.assign_attributes(piece_params)
-      unless @game.check_board_state
+      unless @game.board_in_check?
         piece.save
         piece.update_attribute(:updated_at, Time.now)
         @game.change_player_turn
-        @game.check_board_state
+        @game.board_in_check?
         render_gamestate_without_pieces
       else
         head 400

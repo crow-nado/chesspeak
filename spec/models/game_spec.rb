@@ -70,17 +70,17 @@ RSpec.describe Game, type: :model do
     context "active player in check" do
       it "allows a player to move out of check" do
         white_rook.update_attributes(x_position: 3)
-        game.change_player_turn; game.check_board_state
+        game.change_player_turn; game.board_in_check?
         expect(game.state).to eq "Check"
 
         black_king.update_attributes(x_position: 2)
-        game.change_player_turn; game.check_board_state
+        game.change_player_turn; game.board_in_check?
         expect(game.state).not_to eq "Check"
       end
       it "requires a player move out of check" do
         white_rook.update_attributes(x_position: 3)
         game.update_attributes(player_whites_turn: false)
-        game.check_board_state
+        game.board_in_check?
         expect(game.state).to eq "Check"
         expect(black_king.valid_move?(3,6)).to be false
       end
@@ -90,7 +90,7 @@ RSpec.describe Game, type: :model do
       it "allows a player put an opponent in check" do
         expect(game.state).to eq "In Progress"
         white_rook.update_attributes(y_position: 7)
-        game.change_player_turn; game.check_board_state
+        game.change_player_turn; game.board_in_check?
         expect(game.state).to eq "Check"
       end
     end
@@ -113,7 +113,7 @@ RSpec.describe Game, type: :model do
         white_pawn_2.update_attributes(y_position: 4)
         black_queen.update_attributes(x_position: 8, y_position: 4)
 
-        game.check_board_state
+        game.board_in_check?
 
         expect(game.state).to eq "Checkmate"
       end

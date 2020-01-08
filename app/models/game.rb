@@ -31,7 +31,7 @@ class Game < ApplicationRecord
     self.pieces.find_by(x_position: x, y_position: y)
   end
 
-  def check_board_state
+  def board_in_check?
     king = self.kings.find_by(color: active_color)
     if inactive_player_valid_moves.include?({x: king.x_position, y: king.y_position})
       self.update_attribute(:state, "Check")
