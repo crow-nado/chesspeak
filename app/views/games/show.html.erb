@@ -25,6 +25,8 @@ document.addEventListener("DOMContentLoaded", function(){
   function updateGameState(game_data) {
     gameStateDiv.innerHTML = game_data.state
     if (game_data.state == "Checkmate") {
+      winnerDiv = document.getElementById(`player-${activeColor}-winner`);
+      winnerDiv.classList.remove("hidden");
       activeColor = null;
     } else {
       activeColor = game_data.active_color;
@@ -132,9 +134,13 @@ document.addEventListener("DOMContentLoaded", function(){
 
 
 <div class="grid-x grid-padding-x align-spaced">
-  <div class="cell large-3 text-center" id="player1">
+  <div class="cell large-3 text-center" id="player-white">
     <h3>Player 1 Ready!</h3>
     <h4><%= @player_white.username %></h4>
+    <div class="winner hidden" id="player-white-winner">
+      <i>&#9813</i>
+      <h3>WINNER</h3>
+    </div>
   </div>
 
   <div class="cell large-auto">
@@ -254,12 +260,16 @@ document.addEventListener("DOMContentLoaded", function(){
     </div>
   </div>
 
-  <div class="cell large-3 text-center" id="player2">
+  <div class="cell large-3 text-center" id="player-black">
     <% if @player_black %>
-        <h3>Player 2 Ready!</h3>
-        <h4><%= @player_black.username %></h4>
+      <h3>Player 2 Ready!</h3>
+      <h4><%= @player_black.username %></h4>
+      <div class="winner hidden" id="player-black-winner">
+        <i>&#9813</i>
+        <h3>WINNER</h3>
+      </div>
     <% else %>
-        <h3> Searching for Opponent...</h3>
+      <h3> Searching for Opponent...</h3>
     <% end %>
   </div>
 </div>
