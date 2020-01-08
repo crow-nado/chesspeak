@@ -7,10 +7,9 @@ document.addEventListener("DOMContentLoaded", function(){
 
   let fetchBoard = fetch("<%= game_pieces_path(@game) %>");
 
-  function renderInitialBoard (json) {
-    activeColor = json.active_color;
-    gameStateDiv.innerHTML = json.state;
-    pieces = json.pieces;
+  function renderInitialBoard (boardState) {
+    updateGameState(boardState)
+    pieces = boardState.pieces;
     pieces.forEach( piece => {
       if (piece.x_position && piece.y_position) {
         let [x, y] = [piece.x_position, piece.y_position];
@@ -21,7 +20,16 @@ document.addEventListener("DOMContentLoaded", function(){
         boardSquare.addEventListener("click", updateActivePiece);
       }
     });
-  };
+  }
+
+  function updateGameState(game_data) {
+    gameStateDiv.innerHTML = game_data.state
+    if (game_data.state == "Checkmate") {
+      activeColor = null;
+    } else {
+      activeColor = game_data.active_color;
+    }
+  }
 
   function updateActivePiece() {
     if (!activePiece && event.target.dataset.color == activeColor) {
@@ -74,15 +82,6 @@ document.addEventListener("DOMContentLoaded", function(){
         reject("Please check the Network for Errors");
       });
     }    
-  }
-
-  function updateGameState(game_response) {
-    gameStateDiv.innerHTML = game_response.state
-    if (game_response.state == "Checkmate") {
-      activeColor = null;
-    } else {
-      activeColor = game_response.active_color;
-    }
   }
 
   function clearSelections() {
