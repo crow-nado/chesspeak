@@ -2,18 +2,15 @@
 document.addEventListener("DOMContentLoaded", function(){
   let activePiece;
   let destinationSquare;
-  let activePlayer = ( setActivePlayer = () => {
-    if (localStorage.getItem('ActivePlayer') == null) {
-      localStorage.setItem('ActivePlayer', 'white');
-    }
-    return localStorage.getItem('ActivePlayer');
-  })();
+  let activeColor;
+  let gameStateDiv = document.getElementById("state");
 
   let fetchBoard = fetch("<%= game_pieces_path(@game) %>");
 
-  function renderInitialBoard (json) {
-    console.log(json);
-    json.forEach( piece => {
+  function renderInitialBoard (boardState) {
+    updateGameState(boardState)
+    pieces = boardState.pieces;
+    pieces.forEach( piece => {
       if (piece.x_position && piece.y_position) {
         let [x, y] = [piece.x_position, piece.y_position];
         let boardSquare = document.querySelector(`[data-x='${x}'][data-y='${y}']`);
@@ -23,10 +20,21 @@ document.addEventListener("DOMContentLoaded", function(){
         boardSquare.addEventListener("click", updateActivePiece);
       }
     });
-  };
+  }
+
+  function updateGameState(game_data) {
+    gameStateDiv.innerHTML = game_data.state
+    if (game_data.state == "Checkmate") {
+      winnerDiv = document.getElementById(`player-${activeColor}-winner`);
+      winnerDiv.classList.remove("hidden");
+      activeColor = null;
+    } else {
+      activeColor = game_data.active_color;
+    }
+  }
 
   function updateActivePiece() {
-    if (!activePiece && event.target.dataset.color == activePlayer) {
+    if (!activePiece && event.target.dataset.color == activeColor) {
       activePiece = event.target;
       activePiece.classList.add("initial");
     }
@@ -37,6 +45,8 @@ document.addEventListener("DOMContentLoaded", function(){
     .then (json => renderInitialBoard(json))
     .catch(error => console.log(error));
 
+
+
   function submitMove() {
     let [newX, newY] = [destinationSquare.dataset.x, destinationSquare.dataset.y]
     let piecePayload = {piece: {
@@ -46,7 +56,7 @@ document.addEventListener("DOMContentLoaded", function(){
     }
     submitPieceUpdate(activePiece.dataset.pieceId, piecePayload)
       .then(response => checkMove(response))
-      .then(() => clearSelections())
+      .then(game_response => updateGameState(game_response))
       .catch(error => console.log(error));
   }
 
@@ -63,9 +73,16 @@ document.addEventListener("DOMContentLoaded", function(){
 
   function checkMove(response) {
     if (response.status === 200) {
+      game_response = response.json();
       updatePieceLocation();
+      clearSelections();
+      return game_response;
     } else {
       alert("That is not a valid move");
+      return new Promise((resolve, reject) => {
+        clearSelections();
+        reject("Please check the Network for Errors");
+      });
     }    
   }
 
@@ -80,7 +97,7 @@ document.addEventListener("DOMContentLoaded", function(){
   function updatePieceLocation() {
     let initialSquare = activePiece;
     destinationSquare.innerHTML = initialSquare.innerHTML;
-    destinationSquare.setAttribute("data-color", activePlayer);
+    destinationSquare.setAttribute("data-color", activeColor);
     destinationSquare.setAttribute("data-piece-id", initialSquare.dataset.pieceId); 
     destinationSquare.addEventListener("click", updateActivePiece);
 
@@ -88,28 +105,8 @@ document.addEventListener("DOMContentLoaded", function(){
     initialSquare.removeAttribute("data-color");
     initialSquare.removeAttribute("data-piece-id");
     initialSquare.removeEventListener("click", updateActivePiece);
-
-    change_turns();
-    //reloadState();
-    document.location.reload(true);
   }
 
-  function change_turns() {
-    if (localStorage.getItem('ActivePlayer') == 'white') {
-      localStorage.setItem('ActivePlayer', 'black');
-    } else {
-      localStorage.setItem('ActivePlayer', 'white');
-    }
-    activePlayer = setActivePlayer();
-  }
-
-  // function reloadState() {
-  //   let stateContainer = document.getElementById("state");
-  //   let gameState = "<%= @game.state %>";
-  //   stateContainer.innerHTML = gameState;
-  // }
-
-  // Maybe attach different event handlers depending on the piece type (instead of for each empty div)
   document.querySelectorAll('.box').forEach( box => {
     box.addEventListener("click", function(event) {
       if (activePiece) {
@@ -132,14 +129,18 @@ document.addEventListener("DOMContentLoaded", function(){
 
 <div class="text-center">
   <h1><%= @game.name %></h1>
-  <h2 id="state"><%= @game.state %></h2>
+  <h2 id="state"></h2>
 </div>
 
 
 <div class="grid-x grid-padding-x align-spaced">
-  <div class="cell large-3 text-center" id="player1">
+  <div class="cell large-3 text-center" id="player-white">
     <h3>Player 1 Ready!</h3>
     <h4><%= @player_white.username %></h4>
+    <div class="winner hidden" id="player-white-winner">
+      <i>&#9813</i>
+      <h3>WINNER</h3>
+    </div>
   </div>
 
   <div class="cell large-auto">
@@ -259,12 +260,16 @@ document.addEventListener("DOMContentLoaded", function(){
     </div>
   </div>
 
-  <div class="cell large-3 text-center" id="player2">
+  <div class="cell large-3 text-center" id="player-black">
     <% if @player_black %>
-        <h3>Player 2 Ready!</h3>
-        <h4><%= @player_black.username %></h4>
+      <h3>Player 2 Ready!</h3>
+      <h4><%= @player_black.username %></h4>
+      <div class="winner hidden" id="player-black-winner">
+        <i>&#9813</i>
+        <h3>WINNER</h3>
+      </div>
     <% else %>
-        <h3> Searching for Opponent...</h3>
+      <h3> Searching for Opponent...</h3>
     <% end %>
   </div>
 </div>

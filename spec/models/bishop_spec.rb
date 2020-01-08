@@ -46,5 +46,4 @@ RSpec.describe Bishop, type: :model do
       expect(bishop.valid_move?(6,6)).to be false
     end
   end
-
 end

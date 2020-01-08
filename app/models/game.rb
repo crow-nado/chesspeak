@@ -7,43 +7,43 @@ class Game < ApplicationRecord
   has_many :queens
   has_many :pieces
   scope :available, -> { where(black_player_id: nil) }
-  attr_accessor :turn_counter, :inactive_player_valid_moves
-  after_initialize :set_turn_counter_to_1, :set_inactive_player_valid_moves
-
-  def set_turn_counter_to_1
-    @turn_counter = 1
-  end
-
-  def set_inactive_player_valid_moves
-    @inactive_player_valid_moves = Array.new
-  end
 
   def start
     self.update_attribute(:state, "In Progress")
-  end
-
-  def change_player_turn
-    @turn_counter += 1
-    fill_inactive_player_valid_moves
-    check_board_state
+    self.update_attribute(:player_whites_turn, true)
   end
 
   def active_color
-    @turn_counter % 2 == 1 ? "white" : "black"
+    player_whites_turn == true ? "white" : "black"
+  end
+
+
+  def change_player_turn
+    self.toggle!(:player_whites_turn)
   end
 
   def check_square(x, y)
     self.pieces.find_by(x_position: x, y_position: y)
   end
 
-  def check_board_state
+  def board_in_check?
     king = self.kings.find_by(color: active_color)
-    if @inactive_player_valid_moves.include?({x: king.x_position, y: king.y_position})
+    if inactive_player_valid_moves.include?({x: king.x_position, y: king.y_position})
       self.update_attribute(:state, "Check")
+      check_for_checkmate(king)
     else
       self.update_attribute(:state, "In Progress")
     end
-    self.state == "Check" ? true : false
+    self.state == "Check" || self.state == "Checkmate" ? true : false
+  end
+
+  def check_for_checkmate(king)
+    possible_moves = king.valid_moves.keep_if { |move| king.in_boundary?(move[:x], move[:y]) }
+    if possible_moves & inactive_player_valid_moves == possible_moves
+      self.update_attribute(:state, "Checkmate")
+      self.lock!
+      self.pieces.each { |piece| piece.lock! }
+    end
   end
 
   def has_enemy_pawns_diagonal(x,y,color)
@@ -65,11 +65,10 @@ class Game < ApplicationRecord
   end
 
   def move_into_check(x,y)
-    @inactive_player_valid_moves = fill_inactive_player_valid_moves
-    @inactive_player_valid_moves.include?({x: x, y: y})
+    inactive_player_valid_moves.include?({x: x, y: y})
   end
 
-  def fill_inactive_player_valid_moves
+  def inactive_player_valid_moves
     @inactive_player_valid_moves = []
     pieces = self.pieces.where.not(color: active_color)
     pieces.each do |piece|
