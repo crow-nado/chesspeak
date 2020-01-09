@@ -1,5 +1,7 @@
 class Sample::GamesController < ApplicationController
 
+  require 'faker'
+
   def create
     @game = Game.create()
     @game.populate_white_side
@@ -10,15 +12,22 @@ class Sample::GamesController < ApplicationController
 
   def show
     @game = Game.find(params[:id])
-    @player_white = {username: "PLAYER WHITE"}
-    @player_black = {username: "PLAYER BLACK"}
+    @player_white = {username: generate_random_name}
+    @player_black = {username: generate_random_name}
     render template: "games/show"
   end
 
 private
 
-  def generate_user
-    #@player_white.username = @player_white[:username]
+  def generate_random_name
+    selections = [
+      Faker::Artist.name,
+      Faker::FunnyName.name,
+      Faker::GreekPhilosophers.name,
+      Faker::Superhero.name,
+      Faker::Beer.name
+    ]
+    selections.sample
   end
 
 end
