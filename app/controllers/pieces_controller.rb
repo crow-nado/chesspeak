@@ -1,14 +1,12 @@
 class PiecesController < ApplicationController
   skip_before_action :verify_authenticity_token
 
-  
   def index
     @game = Game.find(params[:game_id])
     render_gamestate_with_pieces
   end
 
   def show
-
   end
 
   def update
@@ -46,6 +44,4 @@ private
   def render_gamestate_without_pieces
     render json: @game.to_json(only: :state, methods: :active_color)
   end
-
-
 end
