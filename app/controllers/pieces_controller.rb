@@ -17,15 +17,16 @@ class PiecesController < ApplicationController
     new_y = piece_params[:y_position].to_i
     captured_piece = @game.pieces.find_by(x_position: new_x, y_position: new_y)
     piece = Piece.find(params[:id])
+    old_x, old_y = piece.x, piece.y
     if piece.valid_move?(new_x, new_y)
       captured_piece.destroy unless captured_piece.nil?
-      piece.assign_attributes(piece_params)
+      piece.update_attributes(piece_params)
       unless @game.board_in_check?
-        piece.save
         @game.change_player_turn
         @game.board_in_check?
         render_gamestate_without_pieces
       else
+        piece.update_attributes(x: old_x, y: old_y)
         head 400
       end
     else
