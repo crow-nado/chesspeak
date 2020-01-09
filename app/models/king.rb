@@ -17,13 +17,15 @@ class King < Piece
       x, y = square[:x], square[:y]
       piece = self.game.check_square(x, y)
       if !is_friendly(piece)
-        unless self.game.has_enemy_pawns_diagonal(x, y, self.color) #|| self.game.inactive_player_valid_moves.include?({x: x, y: y})
+        unless self.game.has_enemy_pawns_diagonal(x, y, self.color)
           @valid_moves.push({x: x, y: y})
         end
       end
     end
     @valid_moves
   end
+
+  private
 
   def adjacentSquares
     squares = []

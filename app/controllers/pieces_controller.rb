@@ -15,12 +15,13 @@ class PiecesController < ApplicationController
     @game = Game.find(params[:game_id])
     new_x = piece_params[:x_position].to_i
     new_y = piece_params[:y_position].to_i
-    captured_piece = @game.pieces.find_by(x_position: new_x, y_position: new_y)
     piece = Piece.find(params[:id])
     if piece.valid_move?(new_x, new_y)
-      captured_piece.destroy unless captured_piece.nil?
+      captured_piece = @game.pieces.find_by(x_position: new_x, y_position: new_y)
       piece.assign_attributes(piece_params)
       unless @game.board_in_check?
+        #Safe Navigation Operator - http://mitrev.net/ruby/2015/11/13/the-operator-in-ruby/
+        captured_piece&.destroy
         piece.save
         @game.change_player_turn
         @game.board_in_check?
