@@ -5,4 +5,10 @@ Rails.application.routes.draw do
   resources :games, only: [:create, :index, :show, :update, :new] do
     resources :pieces, only: [:destroy, :index, :show, :update]
   end
+
+  namespace :sample do
+    resources :games, only: [:create, :index, :show, :update, :new] do
+      resources :pieces, only: [:destroy, :index, :show, :update]
+    end
+  end
 end

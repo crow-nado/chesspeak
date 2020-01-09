@@ -1,6 +1,8 @@
 <br />
 <div class="row align-center">
   <div class="head small-3 small-centered columns">
+    <%= link_to "PLAY SAMPLE GAME", new_sample_game_path, class: "button large", id: "newGameButton" %>
+    <h4 style="text-align:center;">OR</h4>
     <% if user_signed_in? %>
       <%= link_to "CREATE NEW GAME!", new_game_path, class: "button large", id: "newGameButton" %>
       <h4 style="text-align:center;">OR</h4>
