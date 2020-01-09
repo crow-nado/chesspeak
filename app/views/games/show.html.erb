@@ -1,3 +1,4 @@
+<script src="https://cdn.jsdelivr.net/gh/mathusummut/confetti.js/confetti.min.js"></script>
 <script>
 document.addEventListener("DOMContentLoaded", function(){
   let activePiece;
@@ -32,6 +33,7 @@ document.addEventListener("DOMContentLoaded", function(){
       winnerDiv.classList.remove("hidden");
       homeBtn.classList.remove("hidden");
       activeColor = null;
+      confetti.start();
     } else {
       activeColor = game_data.active_color;
       document.getElementById(`player-${activeColor}`).classList.add("active-player");
@@ -130,6 +132,7 @@ document.addEventListener("DOMContentLoaded", function(){
 
 });
 </script>
+
 <br />
 
 <div class="text-center">
