@@ -26,7 +26,6 @@ class King < Piece
   end
 
   private
-
   def adjacent_squares
     squares = []
     [-1, 1].each do |n|
