@@ -6,11 +6,12 @@
   border: solid green 2px;
 }
 
-.active-player {
+h2.active-player {
   text-shadow: #000 0 0 0;
   animation: pulse 8s infinite;
   text-decoration: underline;
   -webkit-text-stroke: 1px white;
+  font-weight: bold;
 }
 
 .hidden {
