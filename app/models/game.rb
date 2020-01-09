@@ -158,6 +158,4 @@ class Game < ApplicationRecord
       self.pieces.create(x_position: column+1, y_position: row)
     end
   end
-
-
 end

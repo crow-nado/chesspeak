@@ -13,7 +13,7 @@ class King < Piece
 
   def valid_moves
     @valid_moves = []
-    adjacentSquares.each do |square|
+    adjacent_squares.each do |square|
       x, y = square[:x], square[:y]
       piece = self.game.check_square(x, y)
       if !is_friendly(piece)
@@ -27,7 +27,7 @@ class King < Piece
 
   private
 
-  def adjacentSquares
+  def adjacent_squares
     squares = []
     [-1, 1].each do |n|
       squares.push({x: self.x + n, y: self.y})

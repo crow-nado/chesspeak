@@ -8,6 +8,7 @@ class Knight < Piece
     @valid_moves
   end
 
+private
   def rotate_90(delta_x,delta_y)
     new_delta_x, new_delta_y = delta_y, (-delta_x)
   end
@@ -19,5 +20,4 @@ class Knight < Piece
       delta_x, delta_y = rotate_90(delta_x, delta_y)
     end
   end
-
 end
