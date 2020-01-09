@@ -9,5 +9,4 @@ class Bishop < Piece
     check_squares_on_path(-1,-1)
     @valid_moves
   end
-
 end
