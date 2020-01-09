@@ -14,6 +14,7 @@ class Sample::GamesController < ApplicationController
     @game = Game.find(params[:id])
     @player_white = {username: generate_random_name}
     @player_black = {username: generate_random_name}
+    @game.update(name: "#{@player_white[:username]} VS #{@player_black[:username]}")
     render template: "games/show"
   end
 
