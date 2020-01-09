@@ -17,7 +17,6 @@ class Game < ApplicationRecord
     player_whites_turn == true ? "white" : "black"
   end
 
-
   def change_player_turn
     self.toggle!(:player_whites_turn)
   end

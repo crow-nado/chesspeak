@@ -11,10 +11,6 @@ class Piece < ApplicationRecord
           methods: [:image])
   end
 
-  def is_white_piece?
-    color == "white"
-  end
-
   def image
     piece = self.piece_type.downcase
     if self.is_white_piece?
@@ -22,6 +18,10 @@ class Piece < ApplicationRecord
     else
       self.image = IconLibrary.black_pieces[piece.to_sym]
     end
+  end
+
+  def is_white_piece?
+    color == "white"
   end
 
   def valid_move?(x, y)
@@ -62,6 +62,11 @@ class Piece < ApplicationRecord
     x <= 8 && x >= 1 && y <= 8 && y >= 1
   end
 
+  def is_enemy(piece)
+    !piece.nil? && piece.color != self.color
+  end
+
+private
   def x_range(x)
     self.x_position > x ? (x+1..self.x_position-1) : (self.x_position+1..x-1)
   end
@@ -72,10 +77,6 @@ class Piece < ApplicationRecord
 
   def square_occupied?(x, y)
     !self.game.check_square(x, y).nil?
-  end
-
-  def is_enemy(piece)
-    !piece.nil? && piece.color != self.color
   end
 
   def is_friendly(piece)
@@ -93,9 +94,5 @@ class Piece < ApplicationRecord
       x_path += x_direction
       y_path += y_direction
     end
-  end
-
-  def game_check
-    self.game.change_player_turn
   end
 end
