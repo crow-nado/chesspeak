@@ -6,7 +6,8 @@ class Game < ApplicationRecord
   has_many :kings
   has_many :queens
   has_many :pieces
-  scope :available, -> { where(black_player_id: nil) }
+  scope :available,  -> { where(black_player_id: nil) }
+  scope :not_sample, -> { where.not(white_player_id: nil) }
 
   def start
     self.update_attribute(:state, "In Progress")

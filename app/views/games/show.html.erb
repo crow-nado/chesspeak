@@ -136,7 +136,7 @@ document.addEventListener("DOMContentLoaded", function(){
 <div class="grid-x grid-padding-x align-spaced">
   <div class="cell large-3 text-center" id="player-white">
     <h3>Player 1 Ready!</h3>
-    <h4><%= @player_white.username %></h4>
+    <h4><%= @player_white[:username] %></h4>
     <div class="winner hidden" id="player-white-winner">
       <i>&#9813</i>
       <h3>WINNER</h3>
@@ -263,7 +263,7 @@ document.addEventListener("DOMContentLoaded", function(){
   <div class="cell large-3 text-center" id="player-black">
     <% if @player_black %>
       <h3>Player 2 Ready!</h3>
-      <h4><%= @player_black.username %></h4>
+      <h4><%= @player_black[:username] %></h4>
       <div class="winner hidden" id="player-black-winner">
         <i>&#9813</i>
         <h3>WINNER</h3>
