@@ -9,7 +9,6 @@ class Rook < Piece
     check_squares_on_path(0,-1)
     @valid_moves
   end
-
 end
 
 

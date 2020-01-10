@@ -1,9 +1,11 @@
+<script src="https://cdn.jsdelivr.net/gh/mathusummut/confetti.js/confetti.min.js"></script>
 <script>
 document.addEventListener("DOMContentLoaded", function(){
   let activePiece;
   let destinationSquare;
   let activeColor;
   let gameStateDiv = document.getElementById("state");
+  let activePlayer;
 
   let fetchBoard = fetch("<%= game_pieces_path(@game) %>");
 
@@ -23,13 +25,18 @@ document.addEventListener("DOMContentLoaded", function(){
   }
 
   function updateGameState(game_data) {
+    document.querySelector(".active-player").classList.remove("active-player")
     gameStateDiv.innerHTML = game_data.state
     if (game_data.state == "Checkmate") {
       winnerDiv = document.getElementById(`player-${activeColor}-winner`);
+      homeBtn = document.getElementById("home");
       winnerDiv.classList.remove("hidden");
+      homeBtn.classList.remove("hidden");
       activeColor = null;
+      confetti.start();
     } else {
       activeColor = game_data.active_color;
+      document.getElementById(`player-${activeColor}`).classList.add("active-player");
     }
   }
 
@@ -125,6 +132,7 @@ document.addEventListener("DOMContentLoaded", function(){
 
 });
 </script>
+
 <br />
 
 <div class="text-center">
@@ -134,9 +142,11 @@ document.addEventListener("DOMContentLoaded", function(){
 
 
 <div class="grid-x grid-padding-x align-spaced">
-  <div class="cell large-3 text-center" id="player-white">
-    <h3>Player 1 Ready!</h3>
-    <h4><%= @player_white.username %></h4>
+  <div class="cell large-3 text-center">
+    <h3>Player 1</h3>
+    <h2 class="active-player" id="player-white">
+      <%= @player_white[:username] %>
+    </h2>
     <div class="winner hidden" id="player-white-winner">
       <i>&#9813</i>
       <h3>WINNER</h3>
@@ -260,10 +270,12 @@ document.addEventListener("DOMContentLoaded", function(){
     </div>
   </div>
 
-  <div class="cell large-3 text-center" id="player-black">
+  <div class="cell large-3 text-center">
     <% if @player_black %>
-      <h3>Player 2 Ready!</h3>
-      <h4><%= @player_black.username %></h4>
+      <h3>Player 2</h3>
+      <h2 id="player-black">
+        <%= @player_black[:username] %>
+      </h2>
       <div class="winner hidden" id="player-black-winner">
         <i>&#9813</i>
         <h3>WINNER</h3>
@@ -282,3 +294,14 @@ document.addEventListener("DOMContentLoaded", function(){
     <button class="button large submit">Submit</button>
   </div>
 </div>
+
+<br />
+
+<div class="grid-x align-center">
+  <div class="cell small-3 hidden" id="home">
+    <%= link_to "HOME", root_path, class: "button large submit" %>
+  </div>
+</div>
+
+
+

@@ -14,6 +14,7 @@ class Pawn < Piece
     @valid_moves
   end
 
+private
   def add_enemy_diagonal
     if self.is_white_piece?
       check_and_add_square(x-1, y+1)

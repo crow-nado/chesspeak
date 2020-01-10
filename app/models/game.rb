@@ -6,20 +6,20 @@ class Game < ApplicationRecord
   has_many :kings
   has_many :queens
   has_many :pieces
-  scope :available, -> { where(black_player_id: nil) }
+  scope :available,  -> { where(black_player_id: nil) }
+  scope :not_sample, -> { where.not(white_player_id: nil) }
 
   def start
     self.update_attribute(:state, "In Progress")
     self.update_attribute(:player_whites_turn, true)
   end
 
-  def active_color
-    player_whites_turn == true ? "white" : "black"
-  end
-
-
   def change_player_turn
     self.toggle!(:player_whites_turn)
+  end
+
+  def active_color
+    player_whites_turn == true ? "white" : "black"
   end
 
   def check_square(x, y)
@@ -37,13 +37,8 @@ class Game < ApplicationRecord
     self.state == "Check" || self.state == "Checkmate" ? true : false
   end
 
-  def check_for_checkmate(king)
-    possible_moves = king.valid_moves.keep_if { |move| king.in_boundary?(move[:x], move[:y]) }
-    if possible_moves & inactive_player_valid_moves == possible_moves
-      self.update_attribute(:state, "Checkmate")
-      self.lock!
-      self.pieces.each { |piece| piece.lock! }
-    end
+  def move_into_check(x,y)
+    inactive_player_valid_moves.include?({x: x, y: y})
   end
 
   def has_enemy_pawns_diagonal(x,y,color)
@@ -64,20 +59,6 @@ class Game < ApplicationRecord
     end
   end
 
-  def move_into_check(x,y)
-    inactive_player_valid_moves.include?({x: x, y: y})
-  end
-
-  def inactive_player_valid_moves
-    @inactive_player_valid_moves = []
-    pieces = self.pieces.where.not(color: active_color)
-    pieces.each do |piece|
-      moves = piece.valid_moves
-      moves.each { |move| @inactive_player_valid_moves.push(move) }
-    end
-    @inactive_player_valid_moves
-  end
-
   def populate_white_side
     populate_white_pawns
     populate_white_rooks
@@ -94,11 +75,30 @@ class Game < ApplicationRecord
     populate_black_king_and_queen
   end
 
-
   def populate_white_pawns
     8.times do |column|
       self.pawns.create(x_position: column+1, y_position: 2, player_id: white_player_id, color: "white")
     end
+  end
+
+private
+  def check_for_checkmate(king)
+    possible_moves = king.valid_moves.keep_if { |move| king.in_boundary?(move[:x], move[:y]) }
+    if possible_moves & inactive_player_valid_moves == possible_moves
+      self.update_attribute(:state, "Checkmate")
+      self.lock!
+      self.pieces.each { |piece| piece.lock! }
+    end
+  end
+
+  def inactive_player_valid_moves
+    @inactive_player_valid_moves = []
+    pieces = self.pieces.where.not(color: active_color)
+    pieces.each do |piece|
+      moves = piece.valid_moves
+      moves.each { |move| @inactive_player_valid_moves.push(move) }
+    end
+    @inactive_player_valid_moves
   end
 
   def populate_black_pawns
@@ -158,6 +158,4 @@ class Game < ApplicationRecord
       self.pieces.create(x_position: column+1, y_position: row)
     end
   end
-
-
 end

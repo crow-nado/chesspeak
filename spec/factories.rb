@@ -11,10 +11,18 @@ FactoryBot.define do
     password_confirmation { "secretPassword" }
   end
 
+  #Set up user 1
+  #Set up user 2
+  #Set up game with user 1 and user 2 assigned to specific fields
+  #Set up pieces at specific places
+
   factory :game do
     name { "Test Name" }
     factory :sample_game do
-      white_player_id { 1 }
+      # user
+      # white_player = build(:user, id: 1)
+      # black_player = build(:user, id: 2)
+      white_player_id { create(:user).id }
       black_player_id { 2 }
 
       factory :sample_game_with_pieces do

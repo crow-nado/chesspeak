@@ -6,6 +6,14 @@
   border: solid green 2px;
 }
 
+h2.active-player {
+  text-shadow: #000 0 0 0;
+  animation: pulse 8s infinite;
+  text-decoration: underline;
+  -webkit-text-stroke: 1px white;
+  font-weight: bold;
+}
+
 .hidden {
   display: none;
 }
@@ -13,4 +21,16 @@
 .winner {
   background-color: #fc019c;
   border-radius: 10px;
+}
+
+@keyframes pulse {
+  0% {
+    text-shadow: #fc019c 1px 0 2px;
+  }
+  50% {
+    text-shadow: #fc019c 1px 0 10px;
+  }
+  100% {
+    text-shadow: #fc019c 1px 0 2px;
+  }
 }
